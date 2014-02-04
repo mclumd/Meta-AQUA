@@ -1,0 +1,70 @@
+MIDCA instructions
+
+1) be on metacog/erewhon
+2) cd /fs/metacog/group/systems/MIDCA1.01
+3) python2.7 midca_inst.py
+4) press enter to step through - each enter moves through one phase, e.g. note, sim.
+5) q + enter to quit
+
+Note: there is a 3 second wait for sockets - new output may not appear right away if you try to cycle through quickly right as it loads.
+
+-----------------------------------------------------------------
+cd /fs/metacog/group/mcl/newmcl/mcl_current/bin
+
+export LD_LIBRARY_PATH=/fs/metacog/group/mcl/newmcl/mcl_current:/fs/metacog/group/mcl/newmcl/mcl_current/lib
+export MCL_CONFIG_PATH=/fs/metacog/group/mcl/newmcl/mcl_current/config/
+export MCL=/fs/metacog/group/mcl/newmcl/mcl_current
+export MCL_CORE_PATH=/fs/metacog/group/mcl/newmcl/mcl_current
+
+./server --mcl.port 5155
+
+(load-Meta-AQUA)
+(load "/fs/metacog/group/systems/Meta-AQUA/MCL.lisp")
+(load "/fs/metacog/group/systems/Meta-AQUA/MCL-patches.lisp")
+(init-Meta-AQUA) ;Changed by MCL-patches.lisp
+(in-package "USER")
+
+;;; Now done from within function init-Meta-AQUA 
+;;; (set-env-vars)
+;;; (init-MCL 5155)
+
+;;; The following is test code now mostly part of function init-MCL
+#|
+(establish-active-agent-connection 5150)
+(format *active-socket* "initialize(meta_aqua,0)")
+(finish-output *active-socket*)
+(format t "~%~s"
+ (read *active-socket*))
+(format *active-socket* "configure(meta_aqua,MA,MA)")
+(finish-output *active-socket*)
+(format t "~%~s"
+ (read *active-socket*))
+(format *active-socket* "declareObservableSelf(meta_aqua,objSensor,0)")
+(finish-output *active-socket*)
+(format t "~%~s"
+ (read *active-socket*))
+(format *active-socket* "setObsPropSelf(meta_aqua,objSensor,prop_sclass,sc_object)")
+(finish-output *active-socket*)
+(format t "~%~s"
+ (read *active-socket*))
+(format *active-socket* "addObsLegalValSelf(meta_aqua,objSensor,0)")
+(finish-output *active-socket*)
+(format t "~%~s"
+ (read *active-socket*))
+(format *active-socket* "declareEG(meta_aqua,0)")
+(finish-output *active-socket*)
+(format t "~%~s"
+ (read *active-socket*))
+(format *active-socket* "declareSelfExp(meta_aqua,0,objSensor,ec_be_legal)")
+(finish-output *active-socket*)
+(format t "~%~s"
+ (read *active-socket*))
+(format *active-socket* "monitor(meta_aqua,{objSensor,0})")
+(finish-output *active-socket*)
+(format t "~%~s"
+ (read *active-socket*))
+(format *active-socket* "monitor(meta_aqua,{objSensor,1})")
+(finish-output *active-socket*)
+(format t "~%~s"
+ (read *active-socket*))
+|#

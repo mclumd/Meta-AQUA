@@ -1,0 +1,6 @@
+The University of Maryland Nonlin Plannning System is a Common Lisp version of
+Austin Tate's hierarchical planner. The manual is in the file nonlin-manual.pdf
+and from-nonlin-manual.ps is section F of the manual. The code is being
+distributed free of charge with no implied warranty or support.
+
+See http://www.cs.umd.edu/projects/plus/Nonlin/ for further info on Nonlin.

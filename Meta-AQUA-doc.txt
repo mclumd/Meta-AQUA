@@ -1,0 +1,307 @@
+[mcox 11dec05] 
+NOTE that this file is very old (last time modified was last century :-) Thus
+the comments may be misleading. The system was originally written on a Symbolic
+machine using Symbolics Lisp. Be forewarned. Given this, however, many
+characteristics of the system still hold and hopefully this file will give you
+a better understanding of the structure and operation of Meta-AQUA. Feel free
+to send email to Michael T. Cox at mcox@cs.umd.edu for questions.
+
+[mcox 8oct99] Today finally PORTED Meta-AQUA to Common-LISP. 
+Also wanted to include the following in documentation to recompute TAGS file:
+etags *.lisp Representations/*.lisp Tale-spin/*.lisp Nonlin/*.lisp Frame/*.lisp
+See also   /usr/local/mcox/Meta-AQUA/etags.script
+
+
+ Documentation for the Meta-AQUA System
+
+0. Overview
+
+1. Explanation of modules, packages, and system decomposition.
+	main module
+	representations module
+	frame module (subsystem)
+	tale-spin front-end module 
+	nonlin back-end module (subsystem)
+
+
+CONTROL DURING FULL STORY GENERATION AND INTERPRETATION
+
+  Single character problem (cd)
+              
+              |
+              |
+              V
+         ___________
+        | Tale-Spin | (spin and mumble functions)
+         -----------
+              |
+              |
+              V
+
+            *ALL* (list of <cd "Generated equivalent text"> tuples)
+
+              |
+              |
+              V
+   _______________________
+  | cd-2-frame-translator | (convert-story function)
+   -----------------------
+              |
+              |
+              V
+
+      *Story-Concepts* (list of <frame "equivalent text"> tuples)
+
+              |
+              |
+              V
+      ________________
+     | goal generator | (function init-goals)
+      ----------------
+              |
+              |
+              V
+
+        *Goal-Queue* (frame model)
+
+              |
+              |
+              V
+         ___________
+        | Meta-AQUA |
+         -----------
+              |
+              |
+              V
+
+        *World-Model* (frame model)
+
+
+2. Explanation of data structures
+	Frame types and tokens; conventions; system slots; facets
+	Goal-queue
+	Models and the problem of variable bindings.
+	MOP event/action representation
+	XPs and Meta-XPs
+	Indexes and memory structures/organization
+	  The first level of indexes is specified by a triple: relation (e.g.,
+	  actor), predicate (relation's domain such as bark) and value
+	  (co-domain of relation such as dog). In fact this relation (who did
+	  what?), that is, the actor of a action, is a salient feature.
+ 
+	  A second level of indexing is currently specified by one (or more)
+	  slots of the original relation's predicate. An example is what a dog
+	  barks at.  The value of the "to" relation is an at-location relation.
+	  So indexing as it stands searches the domains of each slot of the
+	  predicate.  This is thus a tuple: role (e.g., to) and type of the
+	  domain of the value of the role (e.g., container).
+
+	  At the end of a sequence, the retrieve or index routine looks at or
+	  sets the memory-type: either question-type.0, xp-type.0, plan-type.0,
+	  or case-type.0.
+
+	                  actor
+	                  |     \ sniff
+	            bark  |      MORE indexing ...
+	                  V
+	             micro-index.15
+	                  |         \
+	                  | dog       \ seal
+	                  V             MORE indexing ...
+	              micro-index.16
+	                  |
+	                  | to
+	                  V
+	            micro-index.24123
+	                 /             \
+	    container  /                \ animate-object
+	              V                  V
+	     micro-index.24124        micro-index.24127
+	             |                         |
+	  xp-type.0  |                         | xp-type.0
+	             V                         V
+	         (BECAUSE.49207)       (XP-DEFENSIVE-BARK)
+
+3. Running the Program
+	Preparing Meta-AQUA for use
+	  cold-boots - To reboot the system logout, then execute a (sigh).
+		After the system is rebooted, login to the machine. Execute the
+		function (lma) and hit resume after the debugger prompt. (Note
+		that the lma function should be defined in your lispm-init.lisp
+		initialization file. The function is used to establish the
+		system and subsystem definitions for Meta-AQUA.) Then set the
+		correct package by the "Set Package AQUA4" command.
+	  loading - "Load System AQUA4"
+		Can also load just a subsystem (e.g., Tale-Spin).
+		Specify by "Load System TSpin"
+		Subsystems: Main, Representations, Tale-Spin, FrameSystem, Nonlin.
+	  compiling - "Compile System AQUA4"
+		Can also compile just a subsystem (e.g., Tale-Spin).
+		Specify by "Compile System TSpin"
+		Subsystems: Main, Representations, Tale-Spin, FrameSystem, Nonlin.
+	  initializing 
+		Function init-aqua. Init-AQUA creates the various I/O windows
+		  for Meta-AQUA and executes various startup functions for the
+		  system. At a LISP Listener window execute the function
+		  (init-aqua). Point the mouse to the window asking for y/n
+		  answer. Type "n" (3 times you will be prompted). Type
+		  <SELECT>-L until you reach the original LISP Listener. Type
+		  C-M-ABORT. <Select >-L again. Strike the <SHIFT> key.
+		Show-Bugs - (setf *Show-Bugs* nil) or (init-4-speed).
+		Recompiling  spin function after loading so that the problem-
+		  menu for characters when spinning stories in manual mode of
+		  spinqua will work right with the synonym stream for the
+		  display window.
+	Quiting Meta-AQUA
+	  suspension - When at an interactive prompt from Meta-AQUA, a user can
+		use the SUSPEND key to get a LISP prompt. To continue with the
+		program, simply strike the RESUME key.
+	  aborts - To stop prematurely the user can simply respond to the
+		prompt for continuation with a "no" answer (this of course only
+		works if the system is not in fully automatic running mode). To
+		abort Meta-AQUA one can use the ABORT key if in interactive
+		prompt.  If Meta-AQUA is supply output, rather than asking for
+		input, use the C-ABORT sequence. If no I.O is occurring, use
+		C-M-ABORT.  Beware that these actions may leave the system in
+		an arbitrary state.  Subsequent system perfomance may be
+		unreliable.  These actions are usually used to stop the program
+		so that a reboot can be performed.  A simple abort (at
+		interactive prompt), however, sometimes will result in a state
+		that is reliable. We guarantee nothing. Also, if the program is
+		left in a state such that all output goes to the "Internal
+		Structures Window," then call the prep function with no
+		arguments.
+	  spinqua in automatic running mode - hit the "y" key to stop the
+		program. (See alias section bnelow for explanation of the
+		spinqua version of Meta-AQUA).
+	Bypassing trying to answer old questions (e.g., arrest questions)
+	Modes
+	  read-story
+	  act-out-story
+	  LISP-programming
+	Aliases - ripsau, intro and spinqua
+	Story-understanding for hand-coded examples
+	  Running different stories; see story-input.lisp
+		One runs Meta-AQUA with the default story. It learns from
+		  failure.
+		One can then run the same story and will not repeat the error.
+		One can also run a similar story such that the dog barks at
+		  a garbage pail in a suspect's house, and the program will
+		  not make an error. This story is invoked by calling the
+		  function set-story-4, then running the program by calling the
+		  main function meta-aqua.
+		One can then run the similar story where the pot is
+		  under the dirty laundry (not a container). It thus forgets
+		  the new explanation is learned in the earlier story. This
+		  story is invoked by calling set-story-5.
+		One can finally run story 7 by calling set-story-7 to
+		  test the learning from story 5. Instead of being under a
+		  laundry pile in a house, the pot is under a compost pile
+		  outside of a house.
+		One can also run Janis' story by calling
+		  set-story-6. This story is the parallel to the original
+		  story, but is in the sports world; that is, the person hits
+		  the ball is anomalous because it is not animate. The
+		  explanation is that the person must have wanted to hurt the
+		  ball. No the person is having fun.
+		How are stories 8 & 9 used?
+	  Establishing a (semi)clean environment after running stories with the
+		reset-memory function.
+	Story-understanding for empirical data collection
+	  Spinqua - learning goals [LG] condition
+		(init-aqua "thirtyfifth.goals.recover.file") ;; Example is for run number 35.
+		(init-4-speed)
+		(make-boring-story nil)
+		(spinqua -1 t t nil nil nil nil 0 nil 'read-story 
+		  "thirtyfifth.goals.results.file" "thirtyfifth.goals.recover.file")
+	  Spinqua - random learning [RL]  (or no learning [NL]) condition
+		(init-aqua "thirtyfifth.random.recover.file") ;;Or nolearn
+		;; Then go into editor and change the select-strategy call in function 
+		;; learn to have a t for the optional parameter (or if nolearn condition,
+		;; comment out body of function blame-assignment). Then recompile function.
+		(init-4-speed)
+		(make-boring-story nil)
+		(recover-from-disk "thirtyfifth.random.recover.file")
+		(spinqua <number of successful stories from goal condition>
+		  t t 'T1044 nil nil nil 0 nil 'read-story 
+		  "thirtyfifth.random.results.file"  ;;Or nolearn
+		  "thirtyfifth.random.recover.file") ;;Or nolearn
+	  Plot Data 
+		;; For LG condition
+		(plot "thirtyfifth" nil 'anomaly nil
+		    (plot "thirtyfifth" nil 'absolute t
+		      (plot "thirtyfifth" nil 'absolute nil 
+		        (plot "thirtyfifth" nil 'question t
+		          (plot "thirtyfifth")))))
+		;; For RL condition
+		(plot "thirtyfifth" t 'anomaly nil
+		    (plot "thirtyfifth" t 'absolute t
+		      (plot "thirtyfifth" t 'absolute nil 
+		        (plot "thirtyfifth" t 'question t
+		          (plot "thirtyfifth" t)))))
+		;; For NL condition
+		(plot "thirtyfifth" 'nolearn 'anomaly nil
+		    (plot "thirtyfifth" 'nolearn 'absolute t
+		      (plot "thirtyfifth" 'nolearn 'absolute nil 
+		        (plot "thirtyfifth" 'nolearn 'question t
+		          (plot "thirtyfifth" 'nolearn)))))
+		;; Then see file gnuplot.script for how to plot 
+		;; the data files using gnuplot.
+	Story-understanding for Stories generated by Tale-Spin
+	Problem-solving by the cats & mice
+	LISP programming 
+
+4. User and programmer features.
+	Preparing Meta-AQUA for edit
+	  loading files into zmacs - "Edit System AQUA4"
+		Can also edit just a subsystem (e.g., Tale-Spin). 
+		Specify by "Edit System TSpin"
+		Subsystems: Main, Representations, Tale-Spin, FrameSystem, Nonlin.
+	Shutting off bugs
+	  *Show-Bugs* variable (part of the frame system actually)
+	Timing runs
+	Break facility
+	Controlling pauses; automatic, semi-automatic and manual (nonautomatic)
+	  parameter options.
+	Streams
+	The internal structures window
+	  The *internal-struct-window* variable determines the display mode for
+	  the internal structures window. Depending on the value of this
+	  variable, the program will either display information regarding the
+	  goal priority-queue or changes to memory. The first mode will be
+	  called goal-monitor mode, whereas the second will be called
+	  memory-monitor mode. The user can toggle between goal-monitor mode
+	  and memory-monitor mode by calling the function
+	  toggle-structures-window. If passed a nil parameter, the
+	  internal structures window can be disabled. This will reduce
+	  i/o and therefore speed up execution of the program.
+	The say-way property to enable the programmer to attach English
+	  equivalent expressions to frame representations
+	Bookkeeping features
+	  In a non-trivial conceptual memory it is easy to declare frames that
+	  reference other frames which are then never defined themselves. Many
+	  errors and bugs can be traced back with great difficulty to some
+	  side- effect of undefined frames. The following routines are designed
+	  to aid the system developer with maintaining consistency in the
+	  conceptual network.
+
+	  To use the following functions call init-frame-bookkeeping before
+	  evaluating the define-frame forms setting up the conceptual memory of
+	  the system. After evaluating these forms one can call
+	  print-bad-frames to get summary statistics. Function
+	  print-only-undefs lists those frames referenced somewhere but not
+	  currently defined. Print-only-definers performs the inverse function.
+	  It lists those definitions that refer to some undefined frame.
+
+	  Additional error checking may be obtained during system creation by
+	  calling f.debugon (has no arguments). This will provide verbose (and
+	  somewhat cryptic) info during calls of f.make-relation, f.put,
+	  f.instantiate-frame, and define-frame.  To turn off reporting simply
+	  call f.debugoff.
+	Debugging verbose
+	  f.debugon & f.debugoff (also frame features really)
+	Story manipulation, debugging, and error recovery in Tale-Spin 
+	Frame system features
+
+5. Hacks and major bugs remaining in the program.
+

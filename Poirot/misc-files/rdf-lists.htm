@@ -1,0 +1,760 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+  <title>Defining N-ary Relations on the Semantic Web</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://www.w3.org/StyleSheets/TR/W3C-WG-NOTE">
+</head>
+
+<body>
+
+<div class="head">
+<a href="http://www.w3.org/"><img src="http://www.w3.org/Icons/w3c_home"
+alt="W3C" height="48" width="72"></a>
+
+<h1>Defining N-ary Relations on the Semantic Web</h1>
+
+  <h2>W3C Working Group Note 12 April 2006</h2>
+  <dl>
+    <dt>This version:</dt>
+    <dd><a href="http://www.w3.org/TR/2006/NOTE-swbp-n-aryRelations-20060412/">http://www.w3.org/TR/2006/NOTE-swbp-n-aryRelations-20060412/</a></dd>
+    <dt>Latest version:</dt>
+    <dd><a href="http://www.w3.org/TR/swbp-n-aryRelations">http://www.w3.org/TR/swbp-n-aryRelations</a></dd>
+    <dt>Previous version:</dt>
+    <dd><a href="http://www.w3.org/TR/2004/WD-swbp-n-aryRelations-20040721/">http://www.w3.org/TR/2004/WD-swbp-n-aryRelations-20040721/</a></dd>
+    <dt>Editors:</dt>
+    <dd><a href="http://smi.stanford.edu/people/noy">Natasha Noy</a>, Stanford 
+      University</dd>
+    <dd><a href="http://www.cs.man.ac.uk/mig/people/rector/">Alan Rector</a>, 
+      University of Manchester</dd>
+    <dt>Contributors:</dt>
+    <dd><a href="http://www.ihmc.us/users/user.php?UserID=42">Pat Hayes</a>, IHMC</dd>
+    <dd><a href="http://www.research.ibm.com/people/w/welty/">Chris Welty</a>, 
+      IBM Research</dd>
+    <dt>&nbsp; </dt>
+    <dd>Also see <a href="#acknowledgements">Acknowledgements</a>.</dd>
+ </dl>
+
+<p class="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &#169; 2006 <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>&#174;</sup> (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>, <a href="http://www.ercim.org/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+
+<!-- end copyright -->
+<hr>
+</div>
+<!-- end of head -->
+
+<h2 class="notoc"><a id="abstract" name="abstract">Abstract</a></h2>
+
+<p>In Semantic Web languages, such as RDF and OWL, a property is a <em>binary</em> 
+  relation: it is used to link two individuals or an individual and a value. However, 
+  in some cases, the natural and convenient way to represent certain concepts 
+  is to use relations to link an individual to more than just one individual or 
+  value. These relations are called <em>n-ary relations</em>. For example, we 
+  may want to represent properties of a relation, such as our certainty about 
+  it, severity or strength of a relation, relevance of a relation, and so on. 
+  Another example is representing relations among multiple individuals, such as 
+  a buyer, a seller, and an object that was bought when describing a purchase 
+  of a book. This document presents ontology patterns for representing n-ary relations 
+  in RDF and OWL and discusses what users must consider when choosing these patterns.</p>
+
+<h2 id="Status">Status of this Document</h2>
+
+<p><em>This section describes the status of  this document at the time of its
+publication. Other documents may  supersede this document. A list of current
+W3C publications and the  latest revision of this technical report can be
+found in the <a href="http://www.w3.org/TR/">W3C technical reports index</a>
+at http://www.w3.org/TR/.</em></p>
+
+<p>This document is a
+<a href="http://www.w3.org/2005/10/Process-20051014/#WGNote">Working 
+Group Note</a>, produced by the
+<a href="http://www.w3.org/2001/sw/BestPractices/">Semantic Web
+Best Practices and Deployment Working Group</a>, part of the
+<a href="http://www.w3.org/2001/sw/">W3C Semantic Web Activity</a>.
+This document is one of a set of documents providing
+an introduction and overview of ontology design patterns produced by the 
+SWBPD Working Group's
+<a href="http://www.w3.org/2001/sw/BestPractices/OEP/">Ontology Engineering
+and Patterns Task Force</a>.
+
+
+<p>
+As of the publication of this Working Group Note the SWBPD
+Working Group has completed work on this document.  Changes
+from the previous Working Draft are summarized in an
+<a href="#Changes">appendix</a>.
+Comments on this document may be sent to
+<a href="mailto:public-swbp-wg@w3.org">public-swbp-wg@w3.org</a>,
+a mailing list with a 
+<a href="http://lists.w3.org/Archives/Public/public-swbp-wg/"
+>public archive</a>.  Further discussion on this material
+may also be sent to the
+<a href="http://www.w3.org/2001/sw/interest/">Semantic Web Interest Group</a>
+mailing list,
+<a href="mailto:semantic-web@w3.org">semantic-web@w3.org</a>,
+also with a <a href="http://lists.w3.org/Archives/Public/semantic-web/"
+ >public archive</a>.
+</p>
+
+<p>Publication as a Working Group Note does not imply endorsement by the W3C Membership. This is a draft document and may be updated, replaced or obsoleted by other documents at any time. It is inappropriate to cite this document as other than work in progress.</p>
+
+<p>This document was produced by a group operating under the <a href="http://www.w3.org/Consortium/Patent-Policy-20040205/">5 February 2004 W3C Patent Policy</a>. This document is informative only. W3C maintains a <a rel="disclosure" href="http://www.w3.org/2004/01/pp-impl/35495/status">public list of any patent disclosures</a> made in connection with the deliverables of the group; that page also includes instructions for disclosing a patent. An individual who has actual knowledge of a patent which the individual believes contains <a href="http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential">Essential Claim(s)</a> must disclose the information in accordance with <a href="http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure">section 6 of the W3C Patent Policy</a>.</p>
+
+<h2 id="toc">Table of Contents</h2>
+
+<ol>
+ <li><a href="#general">General issues</a></li>
+ <li><a href="#examples">Use case examples</a></li>
+ <li><a href="#representation">Representation patterns</a>
+  <ol>
+   <li><a href="#vocabulary">Vocabulary for n-ary relations in RDF and OWL</a></li>
+   <li><a href="#pattern1">Pattern 1: Introducing a new class for a relation</a>
+    <ol>
+     <li><a href="#useCase1">Use Case 1: additional attributes describing a relation</a></li>
+     <li><a href="#useCase2">Use Case 2: different aspects of the same relation</a></li> 
+     <li><a href="#useCase3">Use Case 3: N-ary relation with no distinguished participant</a></li>
+     <li><a href="#choosingPattern1or2">Considerations when introducing a new class for a relation</a></li>
+    </ol>
+   </li>
+   <li><a href="#pattern2">Pattern 2: Using lists for arguments in a relation</a></li>
+  </ol>
+ </li>
+ <li><a href="#RDFReification">N-ary relations and reification in RDF</a></li>
+ <li><a href="#background">Additional Background</a>
+  <ol>
+   <li><a href="#Note">Note on vocabulary: Relations and instances of relations, Properties and Property instances</a></li>
+   <li><a href="#anonvnamed">Anonymous vs named instances in these patterns</a></li>
+   <li><a href="#sec-notes">Notes</a></li>
+  </ol>
+ </li>
+ <li><a href="#References">References</a></li>
+ <li><a href="#Changes">Changes</a></li>
+ <li><a href="#acknowledgements">Acknowledgements</a></li>
+</ol>
+
+<hr>
+
+<h2 id="general">General issues</h2>
+
+<p>In Semantic Web languages, such as RDF and OWL, a property is a
+<em>binary</em> relation: instances of properties link two individuals. Often
+we refer to the second individual as the "value" or to both both individuals
+as "arguments" [See <a href="#Note">note on vocabulary]</a>.</p>
+
+<p>Issue 1: If property instances can link only two individuals, how do we deal 
+  with cases where we need to <em>describe</em> the instances of relations, such 
+  as its certainty, strength, etc?</p>
+
+<p>Issue 2: If instances of properties can link only two individuals, how do we 
+  represent relations among more than two individuals? ("n-ary relations")</p>
+
+<p>Issue 3: If instances of properties can link only two individuals, how do we 
+  represent relations in which one of the participants is an ordered list of individuals 
+  rather than a single individual?</p>
+
+<p>The solutions to the first two problems are closely linked; the third problem 
+  is fundamentally different, although it can be adapted to meet issue one in 
+  special cases. Note that we don't use RDF reification in these patterns; the 
+  reasons for this decision are discussed in <a href="#RDFReification">the final 
+  section</a>.</p>
+<h4 id="docDataDesc">Data descriptions used in this document</h4>
+  
+<p>The data format used in this document is <a href="http://www.w3.org/2001/sw/DataAccess/df1/">Turtle</a> 
+  [<a href="#turtle">Turtle</a>], used to show each triple explicitly. Turtle allows 
+  URIs to be abbreviated with prefixes:</p>
+
+  
+<div class="exampleOuter exampleInner data"> 
+  <pre class="data">
+@prefix dc:   &lt;http://purl.org/dc/elements/1.1/&gt; .
+@prefix :     &lt;http://example.org/book/&gt; .
+:book1  dc:title  "Defining N-ary Relations on the Semantic Web" .
+</pre>
+  </div>
+
+
+
+<h2 id="examples">Use case examples</h2>
+
+<p>Several common use cases fall under the category of n-ary relations. Here
+are some examples:</p>
+<ol>
+  <li><em><a name="example1"></a>Christine has breast tumor with high probability</em>. 
+    There is a binary relation between the person <code>Christine</code> and diagnosis 
+    <code>Breast_Tumor_Christine</code> and there is a qualitative probability 
+    value describing this relation (<code>high</code>).</li>
+  <li><em><a name="example2"></a></em><em>Steve has temperature, which is high, 
+    but falling</em>. The individual <code>Steve</code> has two values for two 
+    different aspects of a <code>has_temperature</code> relation: its <code>magnitude</code> 
+    is <code>high</code> and its <code>trend</code> is <code>falling</code>.</li>
+  <li><em><a name="example3"></a></em><em>John buys a "Lenny the Lion" book from 
+    books.example.com for $15 as a birthday gift. </em>There is a relation, in 
+    which individual <code>John</code>, entity <code>books.example.com</code> 
+    and the book <code>Lenny_the_Lion</code> participate. This relation has other 
+    components as well such as the purpose (<code>birthday_gift</code>) and the 
+    amount (<code>$15</code>).</li>
+  <li><em><a name="example4"></a>United Airlines flight 3177 visits the following 
+    airports: LAX, DFW, and JFK.</em> There is a relation between the individual 
+    flight and the three cities that it visits, <code>LAX</code>, <code>DFW</code>, 
+    <code>JFK</code>. Note that the order of the airports is important and indicates 
+    the order in which the flight visits these airports.</li>
+</ol>
+
+<p>Another way to think about the use cases is how they might occur in the
+evolution of an ontology.</p>
+<ol>
+  <li>We discover that a relation that we thought was binary, really needs a
+    further argument - a common origin of use case 1.</li>
+  <li>We discover that two binary properties always go together and should be 
+    represented as one n-ary relation - a common origin for use case 2</li>
+  <li>From the beginning, we realize that the relation is really amongst several 
+    things - a common origin for use case 3</li>
+  <li>The nature of the relation is such that one or more of the arguments is
+    fundamentally a sequence rather than a single individual - use case
+  4.</li>
+</ol>
+
+<p></p>
+
+<h2 id="representation">Representation patterns</h2>
+
+<p>As we describer earlier, in Semantic Web Languages, properties are binary relations. 
+  Each instance of a property links an individual to another individual or a value 
+  as shown below.</p>
+
+<p><img src="binaryRelation.jpg" alt="Property P relating resources A and B" width="242" height="59"></p>
+
+<p>We would like to have another individual or simple value <code>C</code> to
+be part of this relation instance:</p>
+
+<p><img src="addingThirdElement.jpg" 
+alt="Property P relating resources A, B, and C"></p>
+
+<p><code>'P'</code> now refers to an instance of a relation among <code>'A'</code>, 
+  <code>'B'</code>, and <code>'C'</code>. (There might be other individuals '<code>D</code>', 
+  '<code>E</code>', and '<code>F</code>'. However, for simplicity, we will illustrate 
+  most of our use cases assuming a single additional individual. We can handle 
+  more individuals in exactly the same way.)</p>
+
+<p>One common solution to this problem (<a href="#pattern1">pattern 1</a>) is 
+  to represent the relation as a class rather than a property. Individual instances 
+  of such classes correspond to instances of the relation. Additional properties 
+  provide binary links to each argument of the relation. We can model examples 
+  <a href="#example1">1</a>, <a href="#example2">2</a>, and <a href="#example3">3</a> 
+  above using this pattern. For instance, in the <a href="#example1">example 1</a> 
+  the instance of a new class <code>Diagnosis_Relation</code> would represent 
+  the fact that Christine has been diagnosed with a breast tumor with high probability. 
+  Similarly, in the <a href="#example3">example 3</a> the instance of a class 
+  <code>Purchase </code> would represent the fact that John bought the book &quot;Lenny 
+  the Lion&quot; from books.com for $15.</p>
+<p>The second solution (<a href="#pattern2">pattern 2</a>) is to represent several 
+  individuals participating in the relation as a collection or an ordered list. 
+  We use this solution when the order of the arguments of the n-ary relation is 
+  important in the model, as in the <a href="#example4">example 4</a> above.</p>
+<h3><a name="vocabulary"></a>Vocabulary for n-ary relations in RDF and OWL</h3>
+<p>The task force plans to produce a suggested vocabulary for describing that 
+  a class represents an n-ary relation and for defining mappings between n-ary 
+  relations in RDF and OWL and other languages. A note on this vocabulary is 
+  forthcoming.</p>
+
+<h3><a name="pattern1"></a>Pattern 1: Introducing a new class for a relation</h3>
+
+<p>We present a pattern where we create a new class and <em>n</em> new properties 
+  to represent an <em>n</em>-ary relation. An instance of the relation linking 
+  the <em>n</em> individuals is then an instance of this class. We consider three 
+  use cases for this pattern, illustrated by <a href="#example1">examples 1-3</a> 
+  above. </p>
+<p>Ontologically the classes created in this way are often called "reified relations". 
+  Reified relations play important roles in many ontologies<a
+href="#refToRdfValue"><sup>3</sup></a> (e.g. Ontoclean/DOLCE, Sowa, GALEN).<span
+style="color: #E50000"><strong> </strong></span>However, the RDF and Topic Map 
+  communities have each used the word "reify" to mean other things (see the <a href="#RDFReification">note</a> 
+  below). Therefore, to avoid confusion, we do not use the term "reification" 
+  in this document.</p>
+<p></p>
+
+<hr>
+<h4><a name="useCase1"></a>Use Case 1: additional attributes describing a relation</h4>
+
+<p>In the first use case, we need to represent an additional attribute describing 
+  a relation instance (<a href="#example1">example 1</a>, <em>Christine has breast 
+  tumor with high probability</em>). We create an individual that represents the 
+  relation instance itself, with links from the subject of the relation to this 
+  instance and with links from this instance to all participants that represent 
+  additional information about this instance:</p>
+
+<p></p>
+
+<p><img src="n-aryRelation_pattern1.jpg" width="265" height="191" alt="pattern 1"></p>
+
+<p>For the example 1 above (<em>Christine has breast tumor with high probability</em>), 
+  the individual <code>Christine</code> has a property<code> has_diagnosis</code> 
+  that has another object (<code>_:Diagnosis_Relation_1</code>, an 
+  instance of the class <code>Diagnosis_Relation</code>) as its value: </p>
+
+<p><img src="diagnosis_example.jpg" alt="Diagnosis example"></p>
+
+<p>The individual <code>_:Diagnosis_Relation_1</code> here represents a single 
+  object encapsulating both the diagnosis (<code>Breast_Tumor_Christine</code>, 
+  a specific instance of <code>Disease</code>) and the probability of the diagnosis 
+  (<code>HIGH</code>)<a
+href="#refToOtherNotes"><sup>3</sup></a>. It contains all the information held 
+  in the original 3 arguments: who is being diagnosed, what the diagnosis is, 
+  and what the probability is. We use <a href="http://esw.w3.org/mt/esw/archives/000034.html">blank 
+  nodes in RDF</a> to represent instances of a relation. </p>
+<pre>:Christine<br>      a       :Person ;<br>      :has_diagnosis _:Diagnosis_Relation_1 .
+
+:_Diagnosis_relation_1<br>      a       :Diagnosis_Relation ;<br>      :diagnosis_probability :HIGH;<br>      :diagnosis_value :Breast_Tumor_Christine .</pre>
+<p>Each of the 3 arguments in the original n-ary relation&#x2014;who is being 
+  diagnosed, what the diagnosis is, and what the probability is&#x2014;gives rise 
+  to a true binary relationship. In this case, there are three: <code>has_diagnosis</code>, 
+  <code>diagnosis_value</code> and <code>diagnosis_probability</code>.<a
+href="#refToRdfValue"><sup>4</sup></a></p>
+
+<p>The class definitions for the individuals in this pattern look as follows:</p>
+
+<p><img src="diagnosis_relation_classes.jpg"
+alt="Classes in the Diagnosis example"></p>
+
+<p>The additional labels on the links indicate the OWL restrictions on the properties. 
+  We define both <code>diagnosis_value</code> and <code>diagnosis_probability</code> 
+  as functional properties, thus requiring that each instance of <code>Diagnosis_Relation</code> 
+  has exactly one value for <code>Disease</code> and one value for <code>Probability</code>.</p>
+
+<p>In RDFS, which does not have the OWL restrictions or functional properties, 
+  the links represent <code>rdfs:range</code> constraints on the properties. For 
+  example, the class <code>Diagnosis_Relation</code> is the range of the property 
+  <code>has_diagnosis</code>.</p>
+
+<p>Here is a definition of the class <code>Diagnosis_Relation</code><a
+href="#refToOtherNotes"></a> in OWL, assuming that both
+properties&#x2014;<code>diagnosis_value</code> and
+<code>diagnosis_probability</code>&#x2014;are defined as functional (we
+provide full code for the example in OWL and RDFS below):</p>
+<pre>:Diagnosis_Relation<br>      a       owl:Class ;<br>      rdfs:subClassOf<br>              [ a       owl:Restriction ;<br>                owl:someValuesFrom :Disease ;<br>                owl:onProperty :diagnosis_value<br>              ] ;<br>      rdfs:subClassOf<br>              [ a       owl:Restriction ;<br>                owl:allValuesFrom :Probability_values ;<br>                owl:onProperty :diagnosis_probability<br>              ] .</pre>
+
+<p>In the definition of the <code>Person</code> class (of which the individual 
+  <code>Christine</code> is an instance), we specify a property <code>has_diagnosis</code> 
+  with the range restriction going to the <code>Diagnosis_Relation</code> class 
+  (of which <code>Diagnosis_Relation_1</code> is an instance):</p>
+<pre>:Person<br>      a       owl:Class ;<br>      rdfs:subClassOf<br>              [ a       owl:Restriction ;<br>                owl:allValuesFrom :Diagnosis_Relation ;<br>                owl:onProperty :has_diagnosis<br>              ] .</pre>
+<p>Note that in discussing this pattern, we are not making any suggestion on the 
+  best way to represent probability pf an event. We simply use it as an example 
+  here. </p>
+<h4 id="useCase1RDFS">RDFS code for this example</h4>
+
+<p>[<a href="diagnosis.rdf">RDFS</a>]</p>
+
+<h4 id="useCase1OWL">OWL code for this example</h4>
+[<a href="diagnosis.n3">N3</a>] [<a href="diagnosis.owl">RDF/XML</a>]
+<hr>
+<h4><a name="useCase2"></a>Use Case 2: different aspects of the same relation</h4>
+<p>We have a different use case in the example 2 above (<em>Steve has temperature, 
+  which is high, but falling</em>): In the example with the diagnosis, many will 
+  view the relationship we were representing as in a fact still a <em>binary</em> 
+  relation between the individual <code>Christine</code> and the diagnosis <code>Breast_Tumor_Christine</code> 
+  that has a probability associated with it. The relation in this example is between 
+  the individual <code>Steve</code> and the object representing different aspects 
+  of the temperature he has. In most intended interpretations, this instance of 
+  a relation cannot be viewed as an instance of a binary relation with additional 
+  attributes attached to it. Rather, it is a relation instance relating the individual 
+  <code>Steve</code> and the complex object representing different facts about 
+  his temperature. Such cases often come about in the course of evolution of an 
+  ontology when we realize that two relations need to be collapsed. For example, 
+  initially, we might have had two properties&#x2014;<code>has_temperature_level</code> 
+  and <code>has_temperature_trend</code>&#x2014;both relating to people. We might 
+  then have realized that these properties really are inextricably intertwined 
+  because we need to talk about "temperatures that are elevated but falling."</p>
+<p><img src="temperature_example.jpg" alt="Temperature example for pattern 1"></p>
+
+<p>The RDFS and OWL patterns that implement this intuition are however the same 
+  as in the previous example. A class <code>Person</code> (of which the individual 
+  <code>Steve</code> is an instance) has a property <code>has_temperature</code> 
+  which has as a range the relation class <code>Temperature_Observation.</code> Instances 
+  of the class <code>Temperature_Observation</code> (such as <code>_:Temperature_Observation_1</code> 
+  in the figure) in turn have properties for <code>temperature_value</code> and 
+  <code>temperature_trend</code>.</p>
+
+<h4 id="useCase2RDFS">RDFS code for this example</h4>
+
+<p>[<a href="temperature.rdf">RDFS</a>]</p>
+
+<h4 id="useCase2OWL">OWL code for this example</h4>
+
+<p>[<a href="temperature.n3">N3</a>] [<a
+href="temperature.owl">RDF/XML</a>]</p>
+<hr>
+<h4 id="useCase3">Use Case 3: N-ary relation with no distinguished participant</h4>
+
+<p>In some cases, the n-ary relationship links individuals that play different 
+  roles in a structure without any single individual standing out as the subject 
+  or the "owner" of the relation, such as <code>Purchase</code> in the example 
+  3 above (<em>John buys a "Lenny the Lion" book from books.example.com for $15 
+  as a birthday gift</em>). Here, the relation explicitly has more than one participant, 
+  and, in many contexts, none of them can be considered a primary one. In this 
+  case, we create an individual to represent the relation instance with links 
+  to all participants:</p>
+
+<p><img src="n-aryRelations_pattern2.jpg" alt="Use case 3"></p>
+
+<p>In our specific example, the representation will look as follows:</p>
+
+<p><img src="purchase_example.jpg" alt="Purchase example"></p>
+<p><code>Purchase_1</code><a
+href="#purchaseName"><sup>5</sup></a> is an individual instance of the <code>Purchase</code> 
+  class representing an instance of a relation:<a
+href="#refToUnits"><sup>6</sup></a></p>
+
+<pre>:Purchase_1<br>      a       :Purchase ;<br>      :has_buyer :John ;<br>      :has_object :Lenny_The_Lion ;<br>      :has_purpose :Birthday_Gift ;
+      :has_amount 15 ;<br>      :has_seller :books.example.com .</pre>
+<p>The following diagram shows the corresponding classes and properties. For
+the sake of the example, we specify that each purchase has exactly one
+<code>buyer</code> (a <code>Person</code>), exactly one <code>seller</code>
+(a <code>Company</code>), exactly one <code>amount</code> and at least one
+<code>object</code> (an <code>Object</code>).</p>
+
+<p><img src="purchase_example_classes.jpg"
+alt="Classes for the Purchase example"></p>
+
+<p>The diagram refers to OWL restrictions. In RDFS the arrows can be treated
+as <code>rdfs:range</code> links.</p>
+
+<p>The class <code>Purchase</code> is defined as follows in OWL (see the RDFS
+file below for the definition in RDFS):</p>
+<pre>:Purchase<br>      a       owl:Class ;<br>      rdfs:subClassOf<br>              [ a       owl:Restriction ;<br>                owl:allValuesFrom :Purpose ;<br>                owl:onProperty :has_purpose<br>              ] ;<br>      rdfs:subClassOf<br>              [ a       owl:Restriction ;<br>                owl:cardinality 1 ;<br>                owl:onProperty :has_buyer<br>              ] ;<br>      rdfs:subClassOf<br>              [ a       owl:Restriction ;<br>                owl:onProperty :has_buyer ;<br>                owl:someValuesFrom :Person<br>              ] ;<br>      rdfs:subClassOf<br>              [ a       owl:Restriction ;<br>                owl:cardinality 1 ;<br>                owl:onProperty :has_seller<br>              ] ;<br>      rdfs:subClassOf<br>              [ a       owl:Restriction ;<br>                owl:onProperty :has_seller ;<br>                owl:someValuesFrom :Company<br>              ] ;
+      rdfs:subClassOf<br>              [ a       owl:Restriction ;<br>                owl:onProperty :has_object ;<br>                owl:someValuesFrom :Object<br>              ] .</pre>
+<p>Note that representation of OWL restrictions themselves follows this pattern: 
+  an OWL restriction is essentially a ternary relation between a class, a property, 
+  and a restriction value. In this case, an instance of the <code>Restriction</code> 
+  class is similar to the instance of <code>Purchase</code>.</p>
+<h4 id="useCase3RDFS">RDFS code for this example</h4>
+
+<p>[<a href="purchase.rdf">RDFS</a>]</p>
+
+<h4 id="useCase3OWL">OWL code for this example</h4>
+[<a href="purchase.n3">N3</a>] [<a href="purchase.owl">RDF/XML</a>]
+
+<h4><a name="choosingPattern1or2"></a>Considerations when introducing a new
+class for a relation</h4>
+<ul>
+  <li>In our example, we did not give <em>meaningful names</em> to instances of 
+    properties or to the classes used to represent instances of n-ary relations, 
+    but merely label them <code>_:Temperature_Observation_1</code>, <code>Purchase_1</code>, 
+    etc. In most cases, these individuals do not stand on their own but merely 
+    function as auxiliaries to group together other objects. Hence a distinguishing 
+    name serves no purpose. Note that a similar approach is taken when <a href="http://www.w3.org/TR/2004/REC-rdf-primer-20040210/#reification">reifying 
+    statements in RDF</a>.</li>
+  <li>Creating a class to represent an n-ary relation limits the use of many OWL 
+    constructs and creates a <em>maintenance problem. </em>The problem arises 
+    when we want to have local range or cardinality restrictions on some role 
+    in the n-ary relation that depend on the class of some other role. For example, 
+    we might want to say that we buy only instances of a class <code>Book</code> 
+    from companies in the category <code>Bookseller</code> (cf. <a href="#useCase3">use 
+    case 3</a>). Expressing this constraint requires a special subclass of the 
+    n-ary relation class that represents the combination of restrictions. For 
+    instance, we will have to create a class <code>Book_Purchase</code> with the 
+    corresponding range restrictions for the property <code>seller</code> (<code>allValuesFrom 
+    Bookseller</code>) and <code>object</code> (<code>allValuesFrom Book</code>). 
+    We end up having to build an explicit lattice of classes to represent all 
+    the possible combinations. &nbsp;&nbsp;</li>
+  <li>OWL allows definition of <em><a
+    href="http://www.w3.org/TR/owl-ref/#inverseOf-def">inverse properties</a></em>. 
+    Defining inverse properties with n-ary relations, using any of the patterns 
+    above, requires more work than with binary relations. In order to specify 
+    inverse properties for n-ary relations, we must specify an inverse for each 
+    of the properties participating in the n-ary relation (with the proper constraints). 
+    Consider the example of <code>John</code> buying the <code>Lenny_The_Lion</code> 
+    book. We may want to have an instance of an inverse relation pointing from 
+    the <code>Lenny_The_Lion</code> book to the person who bought it. If we had 
+    a simple binary relation <code>John</code> <code>buys</code> <code>Lenny_The_Lion</code>, 
+    defining an inverse is simple: we simply define a property <code>is_bought_by</code> 
+    as an inverse of <code>buys</code>:<br>
+    <pre>:is_bought_by<br>      a       owl:ObjectProperty ;<br>      owl:inverseOf :buys .</pre>
+    With the purchase relation represented as an instance, however, we need to 
+    add inverse relations between participants in the relation and the instance 
+    relation itself:<br>
+    <img src="purchase_example_inverses.jpg" alt = "Purchase example with inverse properties" width="581" height="246"> 
+    <br>
+    For example, the definitions of the inverse relations for <code>buyer</code> 
+    and <code>object</code> of a purchase, look as follows:<br>
+    <pre>:is_buyer_for<br>      a       owl:ObjectProperty ;<br>      owl:inverseOf :has_buyer .
+:is_object_for<br>      a       owl:ObjectProperty ;<br>      owl:inverseOf :has_object .</pre>
+    In the definition of the class <code>Person</code>, we include an <code>allValuesFrom</code> 
+    restriction on the property <code>is_buyer_for</code>, to restrict the values 
+    for this property to instances of the class <code>Purchase</code>:<br>
+    <pre>:Person<br>      a       owl:Class ;<br>      rdfs:subClassOf<br>              [ a       owl:Restriction ;<br>                owl:onProperty :is_buyer_for ;<br>                owl:allValuesFrom :Purchase<br>              ] .</pre>
+    <br>
+    Note that the value of the inverse property <code>is_buyer_for</code> for 
+    the individual <code>John</code>, for example, is the individual <code>Purchase_1</code> 
+    rather than the <code>object</code> or <code>recipient</code> of the purchase.</li>
+</ul>
+
+<hr>
+
+<h3><a name="pattern2"></a>Pattern 2: Using lists for arguments in a relation</h3>
+
+<p>Some n-ary relations do not naturally fall into either of the use cases above, 
+  but are more similar to a list or sequence of arguments. The example 4 above 
+  (<em>United Airlines flight 3177 visits the following airports: LAX, DFW, and 
+  JFK</em>) falls into this category. In this example, the relation holds between 
+  the flight and the airports it visits, in the order of the arrival of the aircraft 
+  at each airport in turn. This relation might hold between many different numbers 
+  of arguments, and there is no natural way to break it up into a set of distinct 
+  properties relating the flight to each airport. At the same time, the order 
+  of the arguments is highly meaningful.</p>
+
+
+<p>In cases where all but one participant in a relation do not have a specific 
+  role and essentially form an ordered list, it is natural to connect these arguments 
+  into a sequence according to some relation, and to relate the one participant 
+  to this sequence (or the first element of the sequence). We represent the example 
+  below using an ordering relation (<code>nextSegment</code>) between instances 
+  of the <code>FlightSegment</code> class. Each flight segment has a property 
+  for the destination of that segment. Note that we add a special subclass of 
+  flight segment, <code>FinalFlightSegment</code>, with a maximum cardinality 
+  of 0 on the <code>nextSegment</code> property, to indicate the end of the sequence.</p>
+
+<p><img src="flight_example.jpg" alt="Example instance graph for flight segments"></p>
+
+<p>RDF supplies a vocabulary for lists &#x2014; the <a
+href="http://www.w3.org/TR/2004/REC-rdf-primer-20040210/#collections">collection 
+  vocabulary</a>, which can also be used in cases where a group of arguments to 
+  the relation have no special role. We do not use the RDF collection vocabulary 
+  in this example, because it is less practical to use a generic ordering relation 
+  when we are representing something more specific. In this example, we represent 
+  a temporal order among constituents.</p>
+
+<p>We can represent the ontology for this example in OWL. Note that using the 
+  <code>rdf:List</code> vocabulary in OWL would have put the ontology in OWL Full 
+  (see the <a href="http://www.w3.org/TR/2004/REC-owl-features-20040210/#s1.3">corresponding 
+  section</a> of the <a href="#ref-owl-guide">OWL Guide</a> for the comparison 
+  of OWL Full and OWL DL). The following ontology is in OWL Lite:</p>
+
+<p><img src="flight_classes.jpg" width="528" height="178" alt="Example class graph for flight segments"></p>
+<pre>:Flight
+	a owl:Class .
+
+:flight_sequence
+   a owl:ObjectProperty , owl:FunctionalProperty ;
+   rdfs:domain :Flight ;
+   rdfs:range :FlightSegment .<br>
+ :FlightSegment
+    a owl:Class ;
+    rdfs:subClassOf owl:Thing ;<br>    rdfs:subClassOf<br>         [ a owl:Restriction ;<br>             owl:cardinality &quot;1&quot;;<br>             owl:onProperty :destination<br>         ] ;<br>   rdfs:subClassOf<br>         [ a owl:Restriction ;
+             owl:allValuesFrom :Airport ;<br>             owl:onProperty :destination<br>          ] .<br>
+  :next_segment<br>      a owl:ObjectProperty , owl:FunctionalProperty ;<br>      rdfs:domain :FlightSegment ;<br>      rdfs:range :FlightSegment .<br>
+
+:FinalFlightSegment
+   a owl:Class ;<br>   rdfs:comment &quot;The last flight segment has no next_segment&quot;;<br>   rdfs:subClassOf :FlightSegment ;<br>   rdfs:subClassOf<br>        [ a owl:Restriction ;  
+            owl:maxCardinality &quot;0&quot;;<br>            owl:onProperty :next_segment<br>         ] .<br>
+  :Airport<br>      a owl:Class .<br>
+  :destination
+      a owl:ObjectProperty , owl:FunctionalProperty ;<br>      rdfs:domain :FlightSegment .</pre>
+<h4 id="pattern2RDFS">RDFS code for this example</h4>
+
+<p>[<a href="flight.rdf">RDFS</a>]</p>
+
+<h4 id="pattern2OWL">OWL code for this example</h4>
+[<a href="flight.n3">N3</a>] [<a href="flight.owl">RDF/XML</a>]
+
+<hr>
+
+<h2><a name="RDFReification"></a>N-ary relations and reification in RDF</h2>
+
+<p>It may be natural to think of <a
+href="http://www.w3.org/TR/2004/REC-rdf-primer-20040210/#reification">RDF reification</a> 
+  when representing n-ary relations. We do not want to use the RDF reification 
+  vocabulary to represent n-ary relations in general for the following reasons. 
+  The RDF reification vocabulary is designed to talk about <em>statements</em>&#x2014;individuals 
+  that are instances of <code>rdf:Statement</code>. A statement is a object, predicate, 
+  subject triple and reification in RDF is used to put additional information 
+  about this triple. This information may include the source of the information 
+  in the triple, for example. In n-ary relations, however, additional arguments 
+  in the relation do not usually characterize the statement but rather provide 
+  additional information about the relation instance itself. Thus, it is more 
+  natural to talk about instances of a diagnosis relation or a purchase rather 
+  than about a statement. In the use cases that we discussed in the note, the 
+  intent is to talk about instances of a relation, not about statements about 
+  such instances.</p>
+<hr>
+
+<h2><a name="background">Additional Background</a></h2>
+
+<h3><a name="Note" id="Note">Note on vocabulary: Relations and instances of
+relations, Properties and Property instances</a></h3>
+
+<p>We usually think of semantic web languages as consisting of triples of the
+form "Individual1-Property-Individual2" (Traditionally, these have been
+termed "object-attribute-value" triples, but we do not use this language here
+because it conflicts with RDF usage.) </p>
+
+<p>However, formally, we interpret properties as representing relations, i.e.
+sets of ordered pairs of individuals. Each instance of a relation is just one
+of those ordered pairs. The "Property" in each triple is fundamentally
+different from the individuals in the triple. It merely indicates to which
+relation the ordered pair consisting of the two individuals belongs. We
+normally name individuals; we do not normally name the ordered pairs. </p>
+
+<h3 id="anonvnamed">Anonymous vs named instances in these patterns</h3>
+
+<p>Often in cases such as <a href="#useCase1">use case 1</a>, we wish to regard 
+  two instances of the relation that have the same argument as equivalent. We 
+  can capture this intuition by using RDF <a href="http://esw.w3.org/mt/esw/archives/000034.html">blank 
+  nodes</a> (e.g., <code>_:Diagnosis_relation</code>) to represent relation instances. 
+  In <a href="#useCase2">use case 2</a>, we wish to consider the possibility that 
+  there might be two distinct purchases with identical arguments. In that case, 
+  the node should be named, e.g. <code>Purchase_1. </code></p>
+<hr>
+
+<p></p>
+
+<h3 id="sec-notes">Notes</h3>
+<ol>
+  <li><a name="reifiedRelations"></a>"Reified relations" play an important role 
+    or have a special status in a number of ontologies, e.g. see Sowa, J. Knowledge 
+    Representation. Morgan Kaufmann, 1999; Welty, C. and Guarino, N. Supporting 
+    ontological analysis of taxonomic relationships. Data and Knowledge Engineering, 
+    39 (1). 51-74.</li>
+  <li><a name="refToOtherNotes"></a>For simplicity, we represent each disease 
+    as an individual. This decision may not always be appropriate, and we refer 
+    the reader to a different note (<em>to be written</em>). Similarly, for simplicity, 
+    in OWL we represent probability values as a class that is an enumeration of 
+    three individuals (<code>HIGH</code>, <code>MEDIUM</code>, and <code>LOW</code>): 
+    <pre>:Probability_values<br>      a       owl:Class ;<br>      owl:equivalentClass<br>              [ a       owl:Class ;<br>                owl:oneOf (:HIGH :MEDIUM :LOW)<br>              ] . </pre>
+    <p>There are other ways to represent partitions of values. Please refer to 
+      a note on Representing Specified Values in OWL [<a href="#ref-specified-values">Specified 
+      Values</a>]. In RDF Schema version, we represent them simply as strings, 
+      also for simplicity reasons.</p>
+  </li>
+  <li><a name="refToRdfValue"></a> RDF has a property <code><a
+    href="http://www.w3.org/TR/2004/REC-rdf-primer-20040210/#rdfvalue">rdf:value</a></code> 
+    that is appropriate in examples such as the Diagnosis example here. While 
+    <code>rdf:value</code> has no meaning on its own, the RDF specification encourages 
+    its use as a vocabulary element to identify the "main" component of a structured 
+    value of a property. Therefore, in our example, we made <code>diagnosis_value</code> 
+    a subproperty of <code>rdf:value</code> property instead of making it a direct 
+    instance of <code>rdf:Property </code> to indicate that <code>diagnosis_value</code> 
+    is indeed the "main" component of a diagnosis.</li>
+  <li><a name="purchaseName"></a>Note that we used a named individual for an instance 
+    of the class <code>Purchase</code> (<code>Purchase_1</code>) rather than an 
+    anonymous blank node here. In this example, there might be two distinct purchases 
+    with exactly the same arguments. </li>
+  <li><a name="refToUnits"></a>For simplicity, we will ignore the fact that the 
+    amount is expressed in $ and will use a simple number as the value for the 
+    property. For a discussion on how to represent units and quantities in OWL, 
+    please refer to a different note (<em>to be written</em>)</li>
+</ol>
+<hr>
+
+<h2><a id="References" name="References">References</a></h2>
+<dl>
+  <dt><a name="ref-specified-values" id="ref-specified-values">[Specified
+  Values]</a></dt>
+    <dd><cite><a
+      href="http://www.w3.org/TR/swbp-specified-values/">Representing
+      Specified Values in OWL: "value partitions" and "value
+      sets"</a></cite>, Alan Rector, Editor, W3C Working Draft, 3 August
+      2004, http://www.w3.org/TR/swbp-specified-values/ .</dd>
+  <dt><a name="ref-OWL-Overview" id="ref-OWL-Overview">[OWL Overview]</a></dt>
+    <dd><cite><a
+      href="http://www.w3.org/TR/2004/REC-owl-features-20040210/">OWL Web
+      Ontology Language Overview</a></cite>, Deborah L. McGuinness and Frank
+      van Harmelen, Editors, W3C Recommendation, 10 February 2004,
+      http://www.w3.org/TR/2004/REC-owl-features-20040210/ . <a
+      href="http://www.w3.org/TR/owl-features/">Latest version</a> available
+      at http://www.w3.org/TR/owl-features/ .</dd>
+  <dt><a name="ref-owl-guide" id="ref-owl-guide">[OWL Guide]</a></dt>
+    <dd><cite><a href="http://www.w3.org/TR/2004/REC-owl-guide-20040210/">OWL
+      Web Ontology Language Guide</a></cite>, Michael K. Smith, Chris Welty,
+      and Deborah L. McGuinness, Editors, W3C Recommendation, 10 February
+      2004, http://www.w3.org/TR/2004/REC-owl-guide-20040210/ . <a
+      href="http://www.w3.org/TR/owl-guide/">Latest version</a> available at
+      http://www.w3.org/TR/owl-guide/ .</dd>
+  <dt><a name="ref-owl-abstract-syntax" id="ref-owl-abstract-syntax">[OWL
+  Semantics and Abstract Syntax]</a></dt>
+    <dd><cite><a
+      href="http://www.w3.org/TR/2004/REC-owl-semantics-20040210/">OWL Web
+      Ontology Language Semantics and Abstract Syntax</a></cite>, Peter F.
+      Patel-Schneider, Patrick Hayes, and Ian Horrocks, Editors, W3C
+      Recommendation, 10 February 2004,
+      http://www.w3.org/TR/2004/REC-owl-semantics-20040210/ . <a
+      href="http://www.w3.org/TR/owl-semantics/">Latest version</a> available
+      at http://www.w3.org/TR/owl-semantics/ .</dd>
+  <dt><a id="ref-rdf-primer" name="ref-rdf-primer">[RDF Primer]</a></dt>
+    <dd><cite><a
+      href="http://www.w3.org/TR/2004/REC-rdf-primer-20040210/">RDF
+      Primer</a></cite>, Frank Manola and Eric Miller, Editors, W3C
+      Recommendation, 10 February 2004,
+      http://www.w3.org/TR/2004/REC-rdf-primer-20040210/ . <a
+      href="http://www.w3.org/TR/rdf-primer/">Latest version</a> available at
+      http://www.w3.org/TR/rdf-primer/ .</dd>
+  <dt><a name="ref-RDF-Semantics" id="ref-RDF-Semantics">[RDF
+  Semantics]</a></dt>
+    <dd><cite><a href="http://www.w3.org/TR/2004/REC-rdf-mt-20040210/">RDF
+      Semantics</a></cite>, Pat Hayes, Editor, W3C Recommendation, 10
+      February 2004, http://www.w3.org/TR/2004/REC-rdf-mt-20040210/ . <a
+      href="http://www.w3.org/TR/rdf-mt/">Latest version</a> available at
+      http://www.w3.org/TR/rdf-mt/ .</dd>
+  <dt><a name="ref-rdf-vocabulary" id="ref-rdf-vocabulary">[RDF
+  Vocabulary]</a></dt>
+    <dd><cite><a
+      href="http://www.w3.org/TR/2004/REC-rdf-schema-20040210/">RDF
+      Vocabulary Description Language 1.0: RDF Schema</a></cite>, Dan
+      Brickley and R. V. Guha, Editors, W3C Recommendation, 10 February 2004,
+      http://www.w3.org/TR/2004/REC-rdf-schema-20040210/ . <a
+      href="http://www.w3.org/TR/rdf-schema/">Latest version</a> available at
+      http://www.w3.org/TR/rdf-schema/ .</dd>
+	      
+  <dt><a name="turtle" id="turtle">[Turtle]</a></dt>
+    <dd>"<a
+      href="http://www.w3.org/2001/sw/DataAccess/df1/">Turtle - Terse
+      RDF Triple Language</a>, Dave Beckett.
+    </dd>
+
+
+</dl>
+<hr>
+
+<h2><a id="Changes" name="Changes">Changes</a></h2>
+<ul>
+  <li>Merged patterns 1 and 2 into one pattern with different use cases. The same 
+    use cases remain, but they are described as different use cases for the same 
+    pattern.</li>
+  <li>Removed consideration bullet talking about logical equivalence of patterns 
+    1 and 2 (since they are a single pattern now).</li>
+  <li>Added more discussion to General issues and Use cases</li>
+  <li>Added <a href="#pattern2">pattern 2</a> (using rdf:Lists)</li>
+  <li>Added the flight example</li>
+  <li>Changed the wording under "Representation Pattern"</li>
+  <li>Use blank nodes for relation instances in <a href="#pattern1">pattern 1</a> 
+    and <a href="#pattern2">pattern 2 </a></li>
+  <li>Added a section on <a href="#RDFReification">N-ary relations and reification 
+    in RDF</a></li>
+  <li>Added a section on <a href="#background">Additional background</a></li>
+  <li>Added references</li>
+  <li>Changed some of references to "relation" to "relation instance" or "instance 
+    of relation"</li>
+  <li>Removed examples in abstract syntax</li>
+  <li>Added <a href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+<hr>
+<h2><a name="acknowledgements"></a>Acknowledgements</h2>
+<p>The editors would like to thank the following Working Group members for their 
+  contributions to this document: Pat Hayes, Jeremy Carroll, Chris Welty, Michael 
+  Uschold, Bernard Vatant. Frank Manola, Ivan Herman, Jamie Lawrence have also 
+  contributed to the document.</p>
+<p>This document is a product of the Ontology Engineering and Patterns Task Force 
+  of the Semantic Web Best Practices and Deployment Working Group. </p>
+<hr>
+<p>
+      <a href="http://validator.w3.org/check?uri=referer"><img border="0"
+          src="http://www.w3.org/Icons/valid-html401"
+          alt="Valid HTML 4.01!" height="31" width="88"></a>
+	  <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!">
+ </a>
+    </p> 
+<br />
+</body>
+</html>

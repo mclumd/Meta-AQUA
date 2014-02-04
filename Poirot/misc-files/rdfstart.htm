@@ -1,0 +1,644 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+  <link rel="stylesheet" href="/styles/default/main.css"  type="text/css"  media="screen, projection"/>
+  <link rel="stylesheet" href="/styles/default/print.css" type="text/css"  media="print"/>
+
+<link rel='stylesheet' href='/styles/default/xultu.css' type='text/css'/>
+  <link rel="home"   href="http://www.xulplanet.com/"/>
+  <link rel="search" href="/search/"/>
+  <link rel="icon"   href="/images/xulplanet_tiny.png"/>
+
+  <title>Developer Guide - Introduction to the RDF Model</title>
+
+</head>
+<body>
+
+
+<div id="header" class="html">
+  <div id="skiptocontent"><a href="#content">skip to content</a></div>
+  <h1>
+  	<a href="http://www.xulplanet.com/"><img id="logo" src="/images/xulplanet.png" alt="XUL Planet" height="65" width="215"/></a>
+  </h1>
+
+<div id="locationlinks">
+  <a href="http://www.xulplanet.com/">Home</a>
+ &gt; <a href='http://www.xulplanet.com/tutorials/'>Tutorials</a> > <a href='http://www.xulplanet.com/tutorials/mozsdk/'>Developer Guide</a> &gt;  Introduction to the RDF Model
+</div>
+
+</div>
+
+<hr class="edgesplit"/>
+
+<div id="sidebar">
+  <h2 id="sidebar-label">Contents</h2>
+  <div id="search">
+    <!-- Search Google -->
+    <form method="get" action="http://www.google.com/custom">
+      <div>
+        <label id="search-label" for="q">Search:</label><br />
+        <input type="text" id="q" name="q" maxlength="255" value=""/>
+    
+        <input type="hidden" name="cof" value="S:http://www.xulplanet.com;AH:left;LH:65;LC:4682B4;L:http://www.xulplanet.com/images/xulplanet.png;ALC:blue;LW:215;AWFID:0979f384d5181409;"/>
+        <input type="hidden" name="domains" value="xulplanet.com"/>
+        <input type="hidden" name="sitesearch" value="xulplanet.com" checked="checked"/>
+
+        <input type="submit" name="sa" value="Go"/>
+      </div>
+    </form>
+  </div>
+
+  <hr />
+
+<div class='category'>
+<h3>Guide Contents</h3><ul>
+<li><a href='observerserv.php'>Global Notifications</a></li>
+<li style='margin-top: 1ex;'><a href='sockets.php'>Sockets</a></li>
+<li><a href='serverpush.php'>Server Push and Server Sockets</a></li>
+<li style='margin-top: 1ex;'><a href='clipboard.php'>Using the Clipboard</a></li>
+<li><a href='dragdrop.php'>Drag and Drop</a></li>
+<li><a href='dragwrap.php'>Drag and Drop JavaScript Wrapper</a></li>
+<li><a href='dragex.php'>Drag and Drop Example</a></li>
+<li style='margin-top: 1ex;'><a href='xmlparse.php'>Parsing and Serializing XML</a></li>
+<li style='margin-top: 1ex;'><a href='rdfstart.php'>Introduction to the RDF Model</a></li>
+<li><a href='rdfsyntax.php'>RDF/XML Syntax</a></li>
+<li><a href='rdfsources.php'>RDF Datasources</a></li>
+<li><a href='rdfsrcdetails.php'>RDF Datasource Details</a></li>
+<li><a href='rdfresources.php'>RDF Resources and Literals</a></li>
+<li><a href='rdfquery.php'>Querying RDF Datasources</a></li>
+<li><a href='rdfmods.php'>Modifying RDF Datasources</a></li>
+<li><a href='rdfcontain.php'>RDF Containers</a></li>
+<li><a href='rdfsave.php'>Saving RDF</a></li>
+</ul>
+</div>
+<hr>
+  <div id="categories">
+    <div class="category">
+      <h3><a href="/tutorials/">Tutorials</a></h3>
+      <!--Everything you need to know about XUL all in one place.-->
+      <ul>
+        <li><a href="/tutorials/xultu/">Main Tutorial</a></li>
+        <li><a href="/tutorials/mozsdk/">Developer Guide</a></li>
+        <li><a href="/tutorials/xulqa/">XUL Questions</a></li>
+      </ul>
+    </div>
+
+    <div class="category">
+        <h3><a href="/references/">References</a></h3>
+        <!-- For a quick lookup of any element, attribute, or component. -->
+        <ul>
+          <li><a href="/references/elemref/">XUL Reference</a></li>
+          <li><a href="/references/objref/">Object Reference</a></li>
+          <li><a href="/references/xpcomref/">XPCOM Reference</a></li>
+        </ul>
+    </div>
+
+    <div class="category">
+      <h3><a href="/forum/">XUL Forum</a></h3>
+      <!-- Consult with other XUL programmers. -->
+    </div>
+
+    <div class="category">
+      <h3><a href="/downloads/">Downloads</a></h3>
+      <!-- A library of XUL apps for you to download. -->
+    </div>
+
+    <div class="category">
+      <h3><a href="/about/">About XULPlanet</a></h3>
+      <!-- Who we are, what we do, why we do it. -->
+    </div>
+    
+<!--
+    <div class="category">
+      <h3><a href="http://xulplanet.com/about/contact.html">Contact Us</a></h3>
+    </div>
+-->
+  </div>
+</div>
+
+<div id="content">
+
+<div class="navlinks-pnc">
+  <a class="nextlink" title="RDF/XML Syntax" href="rdfsyntax.php">Next</a>
+</div>
+
+<h2>Introduction to the RDF Model</h2>
+
+<p>
+This section will describe the Resource Description Framework model.
+</p>
+
+<h3>Resources</h3>
+
+<p>
+RDF (Resource Description Framework) is a model for storing graphs of information.
+Given a set of resources, each resource being a thing, such as a person, a song,
+a web page or a bookmark, RDF is used to create relationships between these
+resources. Some people think of RDF as an XML language for describing data.
+However, this XML format is just a method of storing RDF in a file. If you are
+trying to learn RDF, it may be confusing to learn it via the XML syntax; instead,
+below, the RDF model is described in enough detail to understand it without
+discussing the XML syntax.
+</p>
+
+<p>
+Think of a web or graph of interconnected nodes. The nodes are connected via
+various relationships. For example, let's say each node represents a person. Each
+person might be related to another person because they are siblings, parents,
+spouses, employees or enemies. Each interconnection is labeled with the
+relationship name.
+</p>
+
+<p>
+Another type of relationship is the physical properties of a node. For instance,
+the name or age of a person. These relationships would be labeled with 'name' and
+'age' instead of 'sibling' or 'parent'.
+</p>
+
+<p>
+RDF is used to describe these relationships. It doesn't actually include the nodes
+directly, but it does indirectly since the relationships point to the nodes. At any
+time, we could introduce a new node, such as a newborn child and all we need to do
+is add two parent relationships, one for each parent.
+</p>
+
+<p>
+In RDF, the nodes can be of two very general types, resources and literals. A
+literal is an actual value, such as the name 'Sandra' or the number '7'. You could
+think of a literal as a string when used in a programming language. A resource is
+a representative of something, more like an object in a programming language.
+For example, a person would be a resource, but the name of the person would be a
+literal.
+</p>
+
+<p>
+In RDF, resources are given URIs so that we can identify them. Since URI's are
+unique, we can identify a specific resource. The value of the URI doesn't really
+matter to RDF since it's just used as an identifer. You might want to use some
+convention though, such as using a URI that includes a serial number when
+identifying a physical object.
+</p>
+
+<h3>Triples</h3>
+
+<p>
+We can add relationships between two resources or between a resource and a
+literal. These relationships are often called triples or arcs. Here are some
+examples:
+</p>
+
+<div class="sample"><pre>
+&lt;http://www.xulplanet.com/rdf/people/Sandra&gt;  -&gt;  name     -&gt;  Sandra
+&lt;http://www.xulplanet.com/rdf/people/Sandra&gt;  -&gt;  gender   -&gt;  female
+&lt;http://www.xulplanet.com/rdf/people/Sandra&gt;  -&gt;  sibling  -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Kevin&gt;
+&lt;http://www.xulplanet.com/rdf/people/Kevin&gt;   -&gt;  gender   -&gt;  male
+</pre></div>
+
+<p>
+In this documentation, we'll use the convention that the items written inside angle
+brackets are resources, and those that are not are literals. Above, we define four
+triples. The first indicates that there is a resource &lt;http://www.xulplanet.com/rdf/people/Sandra&gt; with
+a name of 'Sandra'. The second indicates that the same resource has a gender of
+'female'. The third triple indicates that the sibling is another resource
+&lt;http://www.xulplanet.com/rdf/people/Kevin&gt;. The final triple specifies a gender for the resource
+&lt;http://www.xulplanet.com/rdf/people/Kevin&gt;.
+</p>
+
+<p>
+A name was not supplied for the &lt;http://www.xulplanet.com/rdf/people/Kevin&gt; resource. To the human
+reader, we could probably assume that the name is likely the literal 'Kevin', but
+the computer system will have no way of knowing this. We could use any URI form
+for the resource; for example the following would be just as acceptable:
+</p>
+
+<div class="sample"><pre>
+&lt;urn:x-person:S1&gt;  -&gt;  name  -&gt;   Sandra
+</pre></div>
+
+<p>
+The resource &lt;urn:x-person:S1&gt; doesn't mean anything
+to a human, and would be just as unmeaningful to a computer system. In fact, a
+less human-meaningful URI might be better since the scheme used with
+&lt;http://www.xulplanet.com/rdf/people/Sandra&gt; wouldn't work if someone
+else was named Sandra. Note that the fact that an http URI is used doesn't
+indicate that it is associated with a web site accessible over HTTP, although
+you might put something related at that URL to download. Instead, you might
+just use the name of your web site when creating URIs to ensure uniqueness
+since other people shouldn't be using it.
+</p>
+
+<p>
+The URI is just an identifier. RDF doesn't care what it is. But if the same URI
+is used is several places, they all refer to the same resource. In the earlier
+example, &lt;http://www.xulplanet.com/rdf/people/Sandra&gt; was refered to
+several times, but they all represent a single thing.
+</p>
+
+<p>
+Even though we didn't specify a name for the &lt;http://www.xulplanet.com/rdf/people/Kevin&gt; resource,
+this doesn't mean that he doesn't have one. If a triple is not specified in
+the graph, it shouldn't be taken to mean that the value doesn't exist, instead it
+might mean that the value is not known, or that it will be provided later.
+</p>
+
+<p>
+One thing to note in the example is that we didn't specify whether Kevin is a
+brother or sister of Sandra, we just used a more generic 'sibling' term. However,
+the system could figure this out using only the information provided and a bit
+of logic. For instance, if the system was told that a brother is a sibling that
+is male, it could determine that Kevin was Sandra's brother using only two of the
+triples:
+</p>
+
+<div class="sample"><pre>
+&lt;http://www.xulplanet.com/rdf/people/Sandra&gt;  -&gt;  sibling  -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Kevin&gt;
+&lt;http://www.xulplanet.com/rdf/people/Kevin&gt;   -&gt;  gender   -&gt;  male
+</pre></div>
+
+<p>
+However, with just those two rules, the system can't determine whether Sandra
+is a brother or sister of Kevin, since those two rules don't indicate Sandra's
+gender. For this, we would need the appropriate rule from the earlier example.
+</p>
+
+<p>
+RDF lets us make up resources, literals, and even the labels of the arcs (such as
+'sibling'). Thus, we could make up a new label at any time:
+</p>
+
+<div class="sample"><pre>
+&lt;http://www.xulplanet.com/rdf/people/Sandra&gt;  -&gt; bestFriend  -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Christine&gt;
+</pre></div>
+
+<p>
+The 'bestFriend' label, and others used above is called the predicate. The left-hand
+side of each triple is called the subject and the right-hand side is called the
+object or target. The subject will always be a resource, while the target may be a
+resource or a literal. You will never have a literal to literal relationship.
+</p>
+
+<p>
+To ensure uniqueness, predicates are also identified with URIs. There will be a
+unique URI for each predicate. For example, the URI for 'sibling' might be
+&lt;http://www.xulplanet.com/rdf/people/sibling&gt;. Usually, related predicate
+labels will be similar so that XML-style namespaces may be used to refer to them.
+So really, the last example would be the following:
+</p>
+
+<div class="sample"><pre>
+&lt;http://www.xulplanet.com/rdf/people/Sandra&gt;  -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/bestFriend&gt;  -&gt;
+            &lt;http://www.xulplanet.com/rdf/people/Christine&gt;
+</pre></div>
+
+<p>
+For the purposes of this documentation, we will sometimes leave out the predicate
+namespace to simplify the examples. Predicates are also resources and you could
+associate relationships between a predicate and something else. This is commonly
+done to define properties that describe what a predicate means, forming a formal
+vocabulary for that predicate.
+</p>
+
+<p>
+You can have multiple triples with the same subject and predicate if you wish:
+</p>
+
+<div class="sample"><pre>
+&lt;http://www.xulplanet.com/rdf/people/Sandra&gt;  -&gt;  name  -&gt;  Sandra
+&lt;http://www.xulplanet.com/rdf/people/Sandra&gt;  -&gt;  name  -&gt;  Sandy
+</pre></div>
+
+<p>
+Here, the same resource has a triple with the same predicate but with a different
+target. In this example, we might assume that multiple names were intended to imply
+nicknames. RDF doesn't order the names, so either name has equal prominence. Don't
+assume that because Sandra is the first triple written that it has any more
+significance than Sandy.
+</p>
+
+<p>
+Let's say that we decide to add another person also named Sandra:
+</p>
+
+<div class="sample"><pre>
+&lt;http://www.xulplanet.com/rdf/people/SandraJr&gt;  -&gt;  name  -&gt;  Sandra
+</pre></div>
+
+<p>
+The resource is different than in the earlier examples because it represents a
+different person, however they both have the same name. With most RDF APIs,
+one can query either way. If all you have is the name 'Sandra', you can get
+the resources with that name by querying in reverse.
+</p>
+
+<h3>Types</h3>
+
+<p>
+Sometimes it is useful to be able to identify what kind of thing a resource is,
+much like how object-oriented systems use classes for this purpose. RDF uses a type
+for this purpose. While there are two very general types, a resource and a literal,
+every resource may be given a precise type. For example, the Sandra resource might
+be given a type of 'Person'. The value of the type should be another resource which
+would mean that more information could be associated with the type itself.
+</p>
+
+<p>
+As with other properties, types are also specified with a triple:
+</p>
+
+<div class="sample"><pre>
+&lt;http://www.xulplanet.com/rdf/people/Sandra&gt;  -&gt;  rdf:type  -&gt;
+      &lt;http://xmlns.com/wordnet/1.6/Person&gt;
+</pre></div>
+
+<p>
+The resource &lt;http://xmlns.com/wordnet/1.6/Person&gt; is used to represent a
+person. The URI is from the WordNet, which provides resource URIs for words.
+The predicate is rdf:type, which is in the RDF namespace since the 'type' predicate
+is built-in to RDF. The full name is 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'.
+Here, we use 'rdf:' as an abbreviation for the RDF namespace, as would be done in
+XML. This is only done to simplify the example -- the predicate is always the full name
+with namespace.
+</p>
+
+<p>
+We can also make up our own types. In the example below we associate the type
+&lt;http://www.xulplanet.com/rdf/example/Poem&gt; as the type of a resource, which
+judging from the URI might be a poem.
+</p>
+
+<div class="sample"><pre>
+&lt;http://www.xulplanet.com/rdf/something/785&gt;  -&gt;  rdf:type  -&gt;  
+      &lt;http://www.xulplanet.com/rdf/example/Poem&gt;
+</pre></div>
+
+<h3>Some List Types</h3>
+
+<p>
+RDF has a number of built-in types for representing lists of things. Recall an
+earlier example where Sandra had two names. It was mentioned that the names were
+not in any particular order. Sometimes, it may be useful to be able to put a set
+of values in a particular order. You might be able to think of ways to work around
+this, for example by using predicates named 'name1', 'name2' and so on. RDF has a
+built-in mechanism for doing this kind of thing.
+</p>
+
+<p>
+In RDF, a predicate that is a number preceded with an underscore is used as an item
+in a list. For example, rdf:_1 is used to indicate the first item in a list. We
+again use the RDF namespace. For example, we could create a list of things
+using:
+</p>
+
+<div class="sample"><pre>
+&lt;http://www.xulplanet.com/rdf/people/Karen&gt;  -&gt;  rdf:_1  -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Sandra&gt;
+&lt;http://www.xulplanet.com/rdf/people/Karen&gt;  -&gt;  rdf:_2  -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Kevin&gt;
+&lt;http://www.xulplanet.com/rdf/people/Karen&gt;  -&gt;  rdf:_3  -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Jack&gt;
+</pre></div>
+
+<p>
+Here, &lt;http://www.xulplanet.com/rdf/people/Karen&gt; has three items in the list. We, as humans, could
+presume that the three items were Karen's children, The computer system won't know
+this, but your application could make this assumption. The three predicates aren't
+special in any way, as we could have used 'name1', 'name2' and 'name3'. However,
+since RDF has the predicates above built-in we should use that if possible.
+</p>
+
+<p>
+Since rdf:_XXX are just predicates like any other, we could also specify multiple
+values with the same number, or we could miss same values out:
+</p>
+
+<div class="sample"><pre>
+&lt;http://www.xulplanet.com/rdf/people/Karen&gt;  -&gt;  rdf:_1  -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Sandra&gt;
+&lt;http://www.xulplanet.com/rdf/people/Karen&gt;  -&gt;  rdf:_6  -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Kevin&gt;
+&lt;http://www.xulplanet.com/rdf/people/Karen&gt;  -&gt;  rdf:_6  -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Billy&gt;
+&lt;http://www.xulplanet.com/rdf/people/Karen&gt;  -&gt;  rdf:_8  -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Jack&gt;
+</pre></div>
+
+<p>
+The above is a list with four items in it. However, the numbers are not sequential.
+Creating triples like this isn't done often, but a list where numbers are skipped
+might be found when an item has been removed.
+</p>
+
+<p>
+In order for RDF to treat these numbered predicates in any special way -- remember
+that they are just ordinary predicates -- RDF also requires that you use a special
+type for lists. Several list types are available:
+</p>
+
+<ul>
+  <li><strong>rdf:Seq</strong>: an ordered list, which is what we would use for the
+  examples above.</li>
+  <li><strong>rdf:Bag</strong>: an unordered list.</li>
+  <li><strong>rdf:Alt</strong>: an list of alternate values where only one value is
+  expected to be used.</li>
+</ul>
+
+<p>
+In the examples above, we would use rdf:Seq because we want the items to be in a
+specific order. We would use rdf:Bag if it didn't matter what order the items were
+in. This might not seem any different that just using multiple 'name' predicates,
+however, if the type is rdf:Bag we know that the resource is expected to contain a
+list of names, instead of just one. For names, we might instead use an Alt since an
+application will only need to use one of the names at a time.
+</p>
+
+<p>
+We assign these list types just like any other type, as described earlier:
+</p>
+
+<div class="sample"><pre>
+&lt;http://www.xulplanet.com/rdf/people/Karen&gt;  -&gt;  rdf:type  -&gt;
+      &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq&gt;
+</pre></div>
+
+<p>
+Here, the full namespace for 'rdf' is used for the target value. Now that Karen is
+an rdf:Seq, we can add the three children as above. One problem here is that now
+that Karen is of the type rdf:Seq, she isn't of the type Person. We could solve
+this by assigning a second type to Karen, as we could with other predicates. A
+better way is to use a second resource as a placeholder for Karen's list of
+children. Karen will remain a Person, but the list of children will be an rdf:Seq.
+</p>
+
+<div class="sample"><pre>
+&lt;http://www.xulplanet.com/rdf/people/Karen&gt;       -&gt;  rdf:type  -&gt;
+      &lt;http://xmlns.com/wordnet/1.6/Person&gt;
+&lt;http://www.xulplanet.com/rdf/people/Karen&gt;       -&gt;  children  -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/KarensKids&gt;
+&lt;http://www.xulplanet.com/rdf/people/KarensKids&gt;  -&gt;  rdf:type  -&gt;
+      &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq&gt;
+&lt;http://www.xulplanet.com/rdf/people/KarensKids&gt;  -&gt;  rdf:_1    -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Sandra&gt;
+&lt;http://www.xulplanet.com/rdf/people/KarensKids&gt;  -&gt;  rdf:_2    -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Kevin&gt;
+&lt;http://www.xulplanet.com/rdf/people/KarensKids&gt;  -&gt;  rdf:_3    -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Jack&gt;
+</pre></div>
+
+<p>
+We have made Karen a Person, and given her a relationship to a resource
+&lt;http://www.xulplanet.com/rdf/people/KarensKids&gt; via the predicate 'children'. Instead of associating
+the three children directly with Karen, we instead associate them with this extra
+resource. This extra resource has a type of rdf:Seq. The result is that Karen is
+given three children but can still have a unique Person type.
+</p>
+
+<p>
+In RDF terms, we don't have to explicitly specify the URI of
+&lt;http://www.xulplanet.com/rdf/people/KarensKids&gt;. Since the pattern above is commonly used, RDF allows
+the use of blank nodes or anonymous resources to be used. An RDF API will allow you
+to create these nodes, and usually a URI might be randomly generated for you.
+Technically, they don't have URIs, but you can still manipulate them as resources,
+and add and remove triples associated with them.
+</p>
+
+<p>
+In all of the examples above, we have only ever been defining triples. Each line
+has a subject, a predicate and an object. Even when defining types and lists, we
+still use triples to define them. RDF is only a list of triples, or relationships
+between things.
+</p>
+
+<p>
+One interesting thing about RDF is that we could take a list of triples from one
+source and combine them with triples from another source. Since the order doesn't
+matter, this would have the same effect as if we had specified them together to
+begin with. For instance, let's assume another source provided the following
+triple:
+</p>
+
+<div class="sample"><pre>
+&lt;http://www.xulplanet.com/rdf/people/KarensKids&gt;  -&gt;  rdf:_4  -&gt;
+      &lt;http://www.xulplanet.com/rdf/people/Wendy&gt;
+</pre></div>
+
+<p>
+When combined with the earlier example, this would mean that Karen would now have
+four children instead of three. This is an important aspect of RDF -- being able to
+combine or aggregate data from multiple sources together.
+</p>
+
+<h3>Triples Example</h3>
+
+<p>
+In the context of a browser, the bookmarks may be stored as a series of RDF triples.
+</p>
+
+<div class="sample"><pre>
+  &lt;urn:x-mark:1&gt;  -&gt;  Name         -&gt;  XULPlanet.com
+  &lt;urn:x-mark:1&gt;  -&gt;  URL          -&gt;  &lt;http://www.xulplanet.com&gt;
+  &lt;urn:x-mark:1&gt;  -&gt;  LastVisited  -&gt;  Sept 8, 2003
+  &lt;urn:x-mark:2&gt;  -&gt;  Name         -&gt;  mozilla.org
+  &lt;urn:x-mark:2&gt;  -&gt;  URL          -&gt;  &lt;http://www.mozilla.org&gt;
+</pre></div>
+
+<p>
+This example has five triples describing two bookmarks. Each bookmark has a Name
+and a URL, and one of them has a LastVisited predicate. The URL values are set
+to another resource, which means that they could be used in other triples.
+</p>
+
+<p>
+If you have a variety of different types of bookmarks, you might create a type for
+each one. For example, your application might have a concept of a subscription
+stored as a bookmark, so you might use a type for it:
+</p>
+
+<div class="sample"><pre>
+  &lt;urn:x-mark:1&gt;  -&gt;  rdf:type  -&gt;  http://www.xulplanet.com/rdf/example/Subscription
+</div>
+
+<p>
+You could use the convention that a bookmark that was a Seq is a bookmark folder.
+The children of the Seq would be the bookmarks stored in the folder.
+</p>
+
+<div class="sample"><pre>
+  &lt;urn:x-mark:folder&gt;  -&gt;  rdf:type  &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq&gt;
+  &lt;urn:x-mark:folder&gt;  -&gt;  rdf:_1    &lt;urn:x-mark:1&gt;
+  &lt;urn:x-mark:folder&gt;  -&gt;  rdf:_2    &lt;urn:x-mark:2&gt;
+</pre></div>
+
+<p>
+This is only an example of the kinds of things that can be stored with RDF. Almost
+any kind of data can be handled with RDF.
+</p>
+<div class="navlinks-pnc">
+  <a class="nextlink" title="RDF/XML Syntax" href="rdfsyntax.php">Next</a>
+</div>
+
+
+<div id="cmcomments">
+  <div id="cmhead">
+    <span class="cmaction">
+      <a href="http://www.xulplanet.com/comments/?for=tutorials%2Fmozsdk%2Frdfstart.php">
+        <img src="http://www.xulplanet.com/images/notes-add.gif" alt="" width="13" height="13" align="middle" border="0" />
+      </a>
+      <a href="http://www.xulplanet.com/comments/?for=tutorials%2Fmozsdk%2Frdfstart.php" class="small">Add a note</a>
+    </span>
+    <strong>User Contributed Notes</strong>
+  </div>
+  
+    
+      <a name="cmnote-0"></a>
+      <div class="cmcomment">
+        <span class="cmdate">August 17, 2005, 12:44 pm</span>
+        <span class="cmemail">pan_andrew at yahoo dot ca</span>
+        <div class="cmtext">
+            I got a translation of RDF recommendation for Polish users. It will enable them to understand RDF better. <br>
+It is available at <a href='http://www.geocities.com/pan_andrew/ResourceDescriptionFramework.htm'>http://www.geocities.com/pan_andrew/ResourceDescriptionFramework.htm</a>
+        </div>
+      </div>
+    
+    
+  
+  <div id="cmfoot">
+    <span class="cmaction">
+      <a href="http://www.xulplanet.com/comments/?for=tutorials%2Fmozsdk%2Frdfstart.php">
+        <img src="http://www.xulplanet.com/images/notes-add.gif" alt="" width="13" height="13" align="middle" border="0" />
+      </a>
+      <a href="http://www.xulplanet.com/comments/?for=tutorials%2Fmozsdk%2Frdfstart.php" class="small">Add a note</a>
+    </span>
+  </div>
+</div>
+<br />
+</div>
+
+<div id="navbar">
+  <span id="navbar_left">
+    <a href="/about/">About XULPlanet</a>
+    <a href="/about/contact/">Contact Us</a>
+  </span>
+  <span id="navbar_center">
+    <a href="http://www.mozilla.org/">mozilla.org</a>
+    <a href="http://www.mozdev.org/">mozdev.org</a>
+    <a href="http://www.mozillazine.org/">MozillaZine.org</a>
+  </span>
+  
+  <span id="navbar_right">
+    Hosted by: <a href="http://www.webaim.org">WebAIM.org</a>
+  </span>
+</div>
+
+<div id="copyblock">
+  Copyright &copy; 1999-2006 XULPlanet.com
+</div>
+
+</body>
+</html>

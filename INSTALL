@@ -1,0 +1,79 @@
+8oct13
+
+The current files were tested using Allegro Version 8.2 on metacog and
+Version 9.0 on a Windows machine.
+
+
+26dec05
+
+The Meta-AQUA system assumes the use of Allegro Common Lisp 5.0.1 or
+higher. The current files were tested using Allegro Version 8.0. However the
+system uses very few Allegro-specific features. The main exception is that is
+Allegro's defsystem macro. If you wish to install using another Lisp, you will
+have to comment out the defsystem calls (see below for locations) and compile
+and load the individual source files manually. See file alt-compile.lisp for 
+an alternative method that MAY enable Meta-AQUA with another Lisp.
+
+
+3aug06
+
+When using the Java display windows option, copy the file jlinker.jar from your
+Allegro CL jlinker home dir to the javatools.jlinker:*jlinker-java-home* dir
+you set up. See below.
+
+
+18dec05
+
+Known bugs:
+The use of the java-windows module under Unix has problems. This will be fixed
+in the near term.
+
+
+11dec05 
+
+To install the Meta-AQUA system, you must first change a number of path-names
+so that they point to the directories where you install the code. Four
+defsystem declarations exist, one each for Meta-AQUA, the Frame System, Nonlin,
+and for Tale-Spin.
+
+File and Location
+------------------
+loader.lisp -- root dir
+frame-sys-def.lisp -- Frame dir off root
+nonlin-sys-def.lisp -- Nonlin dir off root
+tspin-sys-def.lisp -- Tale-spin dir off root
+
+
+If using the optional Java display windows, change the
+javatools.jlinker:*jlinker-java-home* variable to point appropriately.
+
+File and Location
+------------------
+jl-config.lisp -- java-windows dir off root
+
+
+
+To compile the Lisp code to must first add the code contained in file
+README.clinit.cl in the Meta-AQUA root directory to a file called .clinit.cl
+(the Common Lisp initialization file) in your regular root directory. Change
+the variable *do-compile-Meta-AQUA* to t from nil (change it back back to nil
+after a successful compile). Then load Lisp. The system should promp you
+whether to compile the system. Type 'y' and hit return at the prompt. This will
+create binary (.fasl) files in various system and subsystem directories.
+
+For added performance using the Java windows output feature, manually compile
+the files patches.lisp and patches-frame.lisp as follows.
+
+(compile-file 
+  (concatenate 'string 
+               *Meta-AQUA-system-dir* 
+               "java-windows/patches"))
+(compile-file 
+  (concatenate 'string 
+               *Meta-AQUA-system-dir* 
+               "java-windows/patches-frame"))
+
+
+To use the system, see comments in file loader.lisp, root dir. Some (partially
+dated) documentation for the Meta-AQUA System Implementation is in the file
+Meta-AQUA-doc.txt.

@@ -1,0 +1,8 @@
+;;; Save .clinit.cl to your root dir (i.e., ~/)
+;;; Then invoke /usr/local/allegrocommonlisp-8.2/alisp from the command line
+;;; Now the following within lisp
+(load-Meta-AQUA)
+(init-Meta-AQUA)
+(set-story-12)
+(Meta-AQUA)
+

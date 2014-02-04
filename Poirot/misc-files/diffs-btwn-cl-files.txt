@@ -1,0 +1,134 @@
+cd c:/poirot/coretrunk/lisp/src/lisp/
+diff -c "c:/Meta-AQUA/Poirot/" "c:/poirot/coretrunk/lisp/src/lisp/poirot-lisp.cl"
+*** c:/Meta-AQUA/Poirot/poirot-lisp.cl	Mon Aug 14 15:10:32 2006
+--- c:/poirot/coretrunk/lisp/src/lisp/poirot-lisp.cl	Mon Aug 14 09:08:44 2006
+***************
+*** 9,23 ****
+  
+  (defpackage :javatools.jlinker (:nicknames :jl))
+  
+- (when (not (if (boundp 'user::*jlinker-initialized*)
+- 	      user::*jlinker-initialized*))
+-     (load (concatenate 
+- 	      'string 
+- 	    user::*poirot-java-home* 
+- 	    "jl-config"))
+-     (setf user::*jlinker-initialized* t)
+-   )
+  
+  
+  ;; -----------------------------------------------------------------
+  ;; Edit these 5 variables as needed
+--- 9,16 ----
+  
+  (defpackage :javatools.jlinker (:nicknames :jl))
+  
+  
++ (load ".\\jl-config")
+  
+  ;; -----------------------------------------------------------------
+  ;; Edit these 5 variables as needed
+***************
+*** 26,33 ****
+  
+  ;; If no namespace is specified for a subject or predicate, this namespace is used
+  (setf *poirot-component-namespace* "http://poirot.bbn.com/2006/05/hyp#")
+! (setf *poirot-component-name* "Meta-AQUA")
+! (setf *poirot-component-description* "Phase 1 testing for Meta-AQUA with the lisp connector")
+  ;; ----------------------------------------------------------------
+  
+  
+--- 19,26 ----
+  
+  ;; If no namespace is specified for a subject or predicate, this namespace is used
+  (setf *poirot-component-namespace* "http://poirot.bbn.com/2006/05/hyp#")
+! (setf *poirot-component-name* "TestLispHypothesizer")
+! (setf *poirot-component-description* "Dumb hypothesizer for testing the lisp connector")
+  ;; ----------------------------------------------------------------
+  
+  
+***************
+*** 36,43 ****
+  		      "core\\build\\lib\\poirot-core.jar"
+  		      "common\\build\\lib\\poirot-common.jar"
+  		      "extlib\\sesame\\lib\\sesame.jar"
+- 		      "extlib\\sesame\\lib\\rio.jar"
+  		      "extlib\\sesame\\lib\\openrdf-model.jar"
+  		      "extlib\\other\\lib\\log4j-1.2.13.jar"
+  		      "lisp" ;; for the log4j.configuration
+  		      ))
+--- 29,36 ----
+  		      "core\\build\\lib\\poirot-core.jar"
+  		      "common\\build\\lib\\poirot-common.jar"
+  		      "extlib\\sesame\\lib\\sesame.jar"
+  		      "extlib\\sesame\\lib\\openrdf-model.jar"
++ 		      "extlib\\sesame\\lib\\rio.jar"
+  		      "extlib\\other\\lib\\log4j-1.2.13.jar"
+  		      "lisp" ;; for the log4j.configuration
+  		      ))
+***************
+*** 90,95 ****
+--- 83,98 ----
+      (jcall addsub-method nil query))
+    t)
+  
++ ;; Set the use abbreviated URI flag.
++ ;; If true, you'll received abbreviated URIs from poirot, with the namespace
++ ;;   replaced with an abbreviation, i.e. ns1:OutputData
++ ;; If false, you'll get the full valid URI, i.e. http://www.daml.org/.../#OutputData
++ ;; Default is false.
++ (defun set-abbreviated-namespace-flag (flag)
++   (let ((ab-method (JMETHOD *poirot-component-class* "setAbbreviatedUri" 1)))
++     (jcall ab-method nil flag))
++   t)
++ 
+  ;; Start the poirot component's connection to the poirot meta controller.
+  ;; Currently this method must be called before the poirot core tomcat server
+  ;;  has been started. 
+***************
+*** 156,176 ****
+  ;; First, you can specify a callback method
+  ;; The execute callback should take one single argument,
+  ;;  which will be the subscription result list.
+! (setf *execute-callback* #'(lambda (results)
+! 			     (format 
+! 			      t 
+! 			      "~%The Semantic Trace as seen by Meta-AQUA is :~%~s~%" 
+! 			      results)
+! 			     ;; Function process-results re-defined in create-frames.lisp
+! 			     (user::process-results 
+! 			      (get-new-subscription-results))
+! 			     (in-package :meta-aqua)
+! 			     (meta-AQUA::Meta-AQUA t)
+! 			     (in-package :poirot-connector)
+! 			     (user::gen-hypo)
+! 			     (done-processing)
+! 			     )
+!       )
+  
+  ;; The second method is to have another thread poll for
+  ;; new results, which are accessed through this variable
+--- 159,165 ----
+  ;; First, you can specify a callback method
+  ;; The execute callback should take one single argument,
+  ;;  which will be the subscription result list.
+! (setf *execute-callback* nil)
+  
+  ;; The second method is to have another thread poll for
+  ;; new results, which are accessed through this variable
+***************
+*** 251,256 ****
+--- 240,250 ----
+  
+  ;; Query helper methods
+  
++ ;; Get the full URI for a prefix abbreviated URI
++ (defun get-full-uri (str)
++   (let ((uri-method (JMETHOD *poirot-component-class* "getFullUri" 1)))
++     (jcall uri-method *poirot-component* str)))
++ 
+  ;; is-uri
+  ;; Determines whether the parameter string is a URI or not by checking
+  ;;  for a preceding http://
+
+Diff finished at Mon Aug 14 16:15:19

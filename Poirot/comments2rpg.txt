@@ -1,0 +1,56 @@
+Robert,
+
+I have finally started to look at what you had done with the lisp
+connector, and I have a few questions. Unfortunately you used a set of
+techniques with which that I am not familiar. Believe it or not,
+although I have used structs, I always put off learning CLOS. I also
+never bothered with the loop construct (seemed a bit too un-lisp-like)
+nor pathnames. And finally I have used Allegro defsystem, but not the
+asdf module. So please bear with me a bit.
+
+1. In file poirot-lisp-connector.asd, you state "this gives us a
+   portable way to have our site-specific settings w/o having to put
+   them in files that are under source code control." Previously we
+   were able to realize this feature by allowing the user to change a
+   set of global variables in the .clinit.cl file that referenced or
+   otherwise called code from independent source files not under
+   version control. I do not understand exactly how the mechanism you
+   established implements this capability. I thought that you were
+   heading in the direction of defining an object representation for
+   the component, and allowing the user to create such an object. You
+   do this in rpg-example. But I see nothing in file
+   poirot-lisp-connector.asd that provides a hook for the
+   developer. Is the comment just misplaced, belonging in another
+   file? Is the commented out code in file rpg-example.asd the code
+   that would go into an initfile or loader file?
+
+2. Now a callback is a pointer to a function that can be altered
+   dynamically at runtime. A global variable that is assigned a lambda
+   form is an example. Here is where my CLOS ignorance really kicks
+   in: Is a method setfable or otherwise changeable at runtime? I do
+   not know if we really need such a capability, but perhaps we should
+   change the name of the method if it cannot be changed. Ditto on
+   loaded-callback.
+
+3. Why use asdf when Allegro has a defsystem? Also I am not sure why
+   you have to create asdf "co-packages." That is the
+   poirot-lisp-connector package has poirot-lisp-connector-asdf and
+   the rpg-example package has rpg-example-asdf.
+
+4. If someone loads poirot-lisp.cl, then *poirot-java-home* gets set
+   right without having to have an operating system-specific root
+   string assigned to a global. But I guess that still requires a load
+   of an absolute pathname string in the .clinit.cl or somewhere,
+   right? Your solution is nice, but it has the drawback of setting
+   the root relatively from a file location three subdirs down from
+   the root (hence the :up :up :up). This is OK since you commented
+   it, but we trade portability for readability. I guess I am just
+   babbling here other than the clarification question above.
+
+5. (defconstant +classpath-separator+ #+unix ":" #+windows ";") -->
+   (defconstant +classpath-separator+ #+unix ":" #+mswindows ";") in
+   file poirot-lisp.cl.
+
+Sorry for the verbosity :-)
+
+Thanx in advance,  _mike

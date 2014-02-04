@@ -1,0 +1,279 @@
+This document sketches some apparent discrepencies and simply calls for more
+uniformnity in the poirot SWS representations. These observations come from
+limited experience with manipulating the triple representation on the blackboard
+rather than from any study of the OWL-S definitions.
+
+In this discussion I will sometimes refer to the example below. This example
+illustrates a common task sequence in the current implementation. That is the
+triples show the state of the blackboard after the user has performed
+PLookup(P4), HLookup(P__2,1000,C2), and Reserve(P4,P__2,H__3). The output shows
+the state as displayed by Meta-AQUA. The complete triple set from the blackboard
+appears at the end of this document.
+
+------------------------------------------------------------------------------
+
+Name: "ServiceInvocation16"
+Type: "PatientPortType_PatientLookup"
+Input: 
+      "InputParam35" = "P4"
+Output: 
+      "OutputParam16" = #<URI http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#OutputData14>
+   (("OutputData14" "PatientLoccode" "P__2") ("OutputData14" "ConditionId" "C2") ("OutputData14" "PatientId" "P4")
+    ("OutputData14" "type" "PatientRecord"))
+
+
+Name: "ServiceInvocation17"
+Type: "HospitalLookupPortType_HospitalLookup"
+Input: 
+      "InputParam39" = "C2"
+      "InputParam38" = "P__2"
+      "InputParam37" = "kilometers"
+      "InputParam36" = "1000"
+Output: 
+      "OutputParam17" = #<URI http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#OutputData15>
+   (("OutputData15" "HospitalRecordElement" "OutputData15_1") ("OutputData15" "type" "HospitalList"))
+
+
+Name: "ServiceInvocation18"
+Type: "TripReservePortType_TripReserve"
+Input: 
+      "InputParam42" = "P__2"
+      "InputParam41" = "H__3"
+      "InputParam40" = "P4"
+Output: 
+      "OutputParam18" = #<URI http://poirot.bbn.com/owl-s/domain/TripReserveConcepts.owl#SuccessfulReservation>
+------------------------------------------------------------------------------
+
+Comments:
+
+1.
+Overloading of symbol PatientId. It is sometimes found in the object role of a 
+triple. 
+    (http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#InputParam35
+     http://www.daml.org/services/owl-s/1.1/Process.owl#parameterType
+     http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#PatientId)
+At other times it is predicate.
+    (http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#OutputData14
+     http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#PatientId P4)
+
+2.
+The blackboard contains at least three representations for groups or lists of
+elements. A group of input parameters is represented by creating a number of
+triples equal to the cardinality of the group, each with the predicate
+hasInput. Alternatively a group in the output of an SWS invocation is
+represented as an object itself, each member having a distinct attribute in the
+record. A third way groups are represented is typified by the elements in the
+semantic trace. All members point to the trace root with the predicate
+elementOf, and each has an index that indicates the order within the group. I 
+suggest that we use the rdf:seq or rdf:list representation instead.
+
+3.
+At least one object has no explicit value. The semantic trace itself is
+apparently represented by a symbol. In the example here it is semanticTrace_12.
+However this symbol has no attribute other than type. Instead semantic trace
+elements point to it using the elementOf predicate. I recommend that the list of
+SWS invocations in the semantic trace be represented with a triple whose value
+is what ever convention best represents a list. See comment of representing
+lists above.
+
+4.
+Input and out parameters have two types. They have a normal type and also an
+attribute called parameterType. This seems unecessary, although it appears the
+issue has been thoroughly discussed and resolved.
+
+5.
+Some object symbols are constant strings such as "P4" whereas other are uris
+such as the following.
+http://poirot.bbn.com/owl-s/domain/TripReserveConcepts.owl#SuccessfulReservation
+It is not clear to me when one is appropriate versus the other.
+
+6.  SWS names could be more consistent. PatientPortType_PatientLookup,
+HospitalLookupPortType_HospitalLookup, TripReservePortType_TripReserve. Perhaps
+the first symbol should be PatientLookupPortType_PatientLookup, though what
+significance is there to the pattern xPortType_x?
+
+
+-----------------------------------------------------------------------------
+-((http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#OutputParam16
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterValue
+                http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#OutputData14)
+               (http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#OutputParam16
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterType
+                http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#PatientLookupResult)
+               (http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#OutputParam16
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#PatientPortType_PatientLookup_PatientRecord_OUT)
+               (http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#ServiceInvocation16
+                http://www.daml.org/services/owl-s/1.1/Process.owl#hasOutput
+                http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#OutputParam16)
+               (http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#ServiceInvocation16
+                http://www.daml.org/services/owl-s/1.1/Process.owl#hasInput
+                http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#InputParam35)
+               (http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#ServiceInvocation16
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#PatientPortType_PatientLookup)
+               (http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#InputParam35
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterValue P4)
+               (http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#InputParam35
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterType
+                http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#PatientId)
+               (http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#InputParam35
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#PatientPortType_PatientLookup_PatientId_IN)
+               (http://poirot.bbn.com http://www.w3.org/2002/07/owl#imports http://www.daml.org/services/owl-s/1.1/Grounding.owl)
+               (http://poirot.bbn.com http://www.w3.org/2002/07/owl#imports http://www.daml.org/services/owl-s/1.1/Process.owl)
+               (http://poirot.bbn.com http://www.w3.org/2002/07/owl#imports http://www.daml.org/services/owl-s/1.1/Profile.owl)
+               (http://poirot.bbn.com http://www.w3.org/2002/07/owl#imports http://www.daml.org/services/owl-s/1.1/Service.owl)
+               (http://poirot.bbn.com http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Ontology)
+               (http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#OutputData14
+                http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#PatientLoccode P__2)
+               (http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#OutputData14
+                http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#ConditionId C2)
+               (http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#OutputData14
+                http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#PatientId P4)
+               (http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#OutputData14
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#PatientRecord)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#ServiceInvocation17
+                http://www.daml.org/services/owl-s/1.1/Process.owl#hasOutput
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#OutputParam17)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#ServiceInvocation17
+                http://www.daml.org/services/owl-s/1.1/Process.owl#hasInput
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam39)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#ServiceInvocation17
+                http://www.daml.org/services/owl-s/1.1/Process.owl#hasInput
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam38)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#ServiceInvocation17
+                http://www.daml.org/services/owl-s/1.1/Process.owl#hasInput
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam37)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#ServiceInvocation17
+                http://www.daml.org/services/owl-s/1.1/Process.owl#hasInput
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam36)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#ServiceInvocation17
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#HospitalLookupPortType_HospitalLookup)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#OutputParam17
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterValue
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#OutputData15)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#OutputParam17
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterType
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#HospitalLookupResult)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#OutputParam17
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#HospitalPortType_HospitalLookup_HospitalRecord_OUT)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam37
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterValue kilometers)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam37
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterType
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#RangeUnits)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam37
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#HospitalPortType_HospitalLookup_Units_IN)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam39
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterValue C2)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam39
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterType
+                http://poirot.bbn.com/owl-s/domain/ConditionLookupConcept.owl#ConditionId)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam39
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#HospitalPortType_HospitalLookup_ConditionId_IN)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam38
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterValue P__2)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam38
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterType http://www.w3.org/2001/XMLSchema#string)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam38
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#HospitalPortType_HospitalLookup_Loccode_IN)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#OutputData15
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#HospitalRecordElement
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#OutputData15_1)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#OutputData15
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#HospitalList)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#OutputData15_1
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#Distance 865.0)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#OutputData15_1
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#Loccode H__3)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#OutputData15_1
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#HospitalName Medical Ship)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#OutputData15_1
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#HospitalID H3)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#OutputData15_1
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#HospitalRecord)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam36
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterValue 1000)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam36
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterType http://www.w3.org/2001/XMLSchema#double)
+               (http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#InputParam36
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#HospitalPortType_HospitalLookup_Range_IN)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#InputParam42
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterValue P__2)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#InputParam42
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterType http://www.w3.org/2001/XMLSchemastring)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#InputParam42
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#TripReservePortType_TripReserve_OriginLoccode_IN)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#ServiceInvocation18
+                http://www.daml.org/services/owl-s/1.1/Process.owl#hasOutput
+                http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#OutputParam18)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#ServiceInvocation18
+                http://www.daml.org/services/owl-s/1.1/Process.owl#hasInput
+                http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#InputParam42)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#ServiceInvocation18
+                http://www.daml.org/services/owl-s/1.1/Process.owl#hasInput
+                http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#InputParam41)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#ServiceInvocation18
+                http://www.daml.org/services/owl-s/1.1/Process.owl#hasInput
+                http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#InputParam40)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#ServiceInvocation18
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#TripReservePortType_TripReserve)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#InputParam40
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterValue P4)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#InputParam40
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterType
+                http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#PatientId)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#InputParam40
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#TripReservePortType_TripReserve_PatientId_IN)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#InputParam41
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterValue H__3)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#InputParam41
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterType http://www.w3.org/2001/XMLSchemastring)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#InputParam41
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#TripReservePortType_TripReserve_DestLoccode_IN)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#OutputParam18
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterValue
+                http://poirot.bbn.com/owl-s/domain/TripReserveConcepts.owl#SuccessfulReservation)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#OutputParam18
+                http://www.daml.org/services/owl-s/1.1/Process.owl#parameterType
+                http://poirot.bbn.com/owl-s/domain/TripReserveConcept.owl#TripReserveResult)
+               (http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#OutputParam18
+                http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#TripReservePortType_TripReserve_Result_OUT)
+               (http://poirot.bbn.com/2006/05/core#semanticTrace_12 http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/2006/05/core#SemanticTrace)
+               (http://poirot.bbn.com/2006/05/core#semanticTraceElement_12_1 http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/2006/05/core#SemanticTraceElement)
+               (http://poirot.bbn.com/2006/05/core#semanticTraceElement_12_1 http://poirot.bbn.com/2006/05/core#index 1)
+               (http://poirot.bbn.com/2006/05/core#semanticTraceElement_12_1 http://poirot.bbn.com/2006/05/core#elementOf
+                http://poirot.bbn.com/2006/05/core#semanticTrace_12)
+               (http://poirot.bbn.com/2006/05/core#semanticTraceElement_12_1 http://poirot.bbn.com/2006/05/core#serviceInvocation
+                http://poirot.bbn.com/owl-s/domain/PatientLookupProcessModel.owl#ServiceInvocation16)
+               (http://poirot.bbn.com/2006/05/core#semanticTraceElement_12_2 http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/2006/05/core#SemanticTraceElement)
+               (http://poirot.bbn.com/2006/05/core#semanticTraceElement_12_2 http://poirot.bbn.com/2006/05/core#index 2)
+               (http://poirot.bbn.com/2006/05/core#semanticTraceElement_12_2 http://poirot.bbn.com/2006/05/core#elementOf
+                http://poirot.bbn.com/2006/05/core#semanticTrace_12)
+               (http://poirot.bbn.com/2006/05/core#semanticTraceElement_12_2 http://poirot.bbn.com/2006/05/core#serviceInvocation
+                http://poirot.bbn.com/owl-s/domain/HospitalLookupProcessModel.owl#ServiceInvocation17)
+               (http://poirot.bbn.com/2006/05/core#semanticTraceElement_12_3 http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                http://poirot.bbn.com/2006/05/core#SemanticTraceElement)
+               (http://poirot.bbn.com/2006/05/core#semanticTraceElement_12_3 http://poirot.bbn.com/2006/05/core#index 3)
+               (http://poirot.bbn.com/2006/05/core#semanticTraceElement_12_3 http://poirot.bbn.com/2006/05/core#elementOf
+                http://poirot.bbn.com/2006/05/core#semanticTrace_12)
+               (http://poirot.bbn.com/2006/05/core#semanticTraceElement_12_3 http://poirot.bbn.com/2006/05/core#serviceInvocation
+                http://poirot.bbn.com/owl-s/domain/TripReserveProcessModel.owl#ServiceInvocation18))

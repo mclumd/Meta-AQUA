@@ -1,0 +1,28 @@
+27dec05
+
+The Frame System can be used as a standalone knowledge representation
+infrastructure or as a support subsystem for the Meta-AQUA system. The file
+frame-sys-def.lisp contains the defsystem specification of the system. The file
+application-frame-demo.lisp is not part of the system itself. It illustrates
+the use of the system as a stand alone unit.
+
+To use the frame system as part of Meta-AQUA, see the file INSTALL in the
+Meta-AQUA root directory. 
+
+To compile the frame system as standalone unit, perform the following steps.
+
+0. Change the :default-pathname string in the defsystem specification of file
+   frame-sys-def.lisp to point to the root directory for the Frame System.
+1. Start alisp
+2. (load "frame-sys-def.lisp")
+3. (compile-system 'FRAME-SYSTEM)
+
+To load the frame system as standalone unit, perform the following steps.
+
+0. Examine application-frame-demo.lisp to understand demo
+1. Start alisp
+2. (load "frame-sys-def.lisp")
+3. (load-system 'FRAME-SYSTEM)
+4. (load "standalone-patch.lisp")
+5. (in-package :frames)
+6. (load "application-frame-demo.lisp")

@@ -1,0 +1,19 @@
+8oct13 
+
+This version of Meta-AQUA is also used for running MIDCA and a
+connection to MCL. See the file INSTALL for instructions that explain
+installation. Old documentation exists in Meta-AQUA-doc.txt. The file
+index.html makes available an online html version of Cox's (1996)
+dissertation on Introspective Multistrategy Learning and Meta-AQUA.
+The tar file in this directory is an old archive. NOTE: Documentation
+may be inconsistent. We will make some effort to update in the
+future. The sample init file (README.clinit.cl) is out of date. POIROT
+is no longer a working version.
+
+23jan08
+
+This version of Meta-AQUA is used for running INTRO, because PRODIGY
+uses alisp whereas EXPLAIN is using mlisp. Some of these files have
+been updated to incorporate changes from the Meta-AQUA core in POIROT,
+but everything is not caught up.
+

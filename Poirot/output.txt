@@ -1,0 +1,34 @@
+Name: "ServiceInvocation0"
+Type: "PatientPortType_PatientLookup"
+Input: 
+      "InputParam0" = "P4"
+Output: 
+      "OutputParam0" = #<URI http://poirot.bbn.com/owl-s/domain/PatientLookupConcept.owl#OutputData0>
+   (("OutputData0" "hasLoccode" "P__2")
+    ("OutputData0" "hasConditionId" "C2")
+    ("OutputData0" "hasPatientId" "P4")
+    ("OutputData0" "type" "PatientRecord"))
+
+Name: "ServiceInvocation1"
+Type: "HospitalLookupPortType_HospitalLookup"
+Input: 
+      "InputParam4" = ""
+      "InputParam3" = "P__2"
+      "InputParam2" = "kilometers"
+      "InputParam1" = "1000"
+Output: 
+      "OutputParam1" = #<URI http://poirot.bbn.com/owl-s/domain/HospitalLookupConcept.owl#OutputData1>
+   (("OutputData1" "HospitalRecordElement" "OutputData1_3")
+    ("OutputData1" "HospitalRecordElement" "OutputData1_2")
+    ("OutputData1" "HospitalRecordElement" "OutputData1_1")
+    ("OutputData1" "type" "HospitalList"))
+
+Name: "ServiceInvocation2"
+Type: "TripReservePortType_TripReserve"
+Input: 
+      "InputParam7" = "P__2"
+      "InputParam6" = "H__3"
+      "InputParam5" = "P4"
+Output: 
+      "OutputParam2" = #<URI http://poirot.bbn.com/owl-s/domain/TripReserveConcepts.owl#SuccessfulReservation>
+   NIL
